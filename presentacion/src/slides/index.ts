@@ -1,11 +1,12 @@
 import type { ComponentType } from 'react';
 import { Portada, EmpresaRecibida, Diagnostico, CincoDecisiones } from './act1';
-import { P1Decision, P1Resultado, P2Seleccion, P2Mapa, P2Costo, P3, P4Decision, P4Resultado, P5Decision, P5Resultado } from './act2';
+import { P2Seleccion, P2Mapa, P2Costo } from './act2';
+import { P1Decision, P1Resultado, P3, P4Decision, P4Resultado, P5Decision, P5Resultado } from './act2v';
 import { EvolucionValor, IngresosResultados, Comercial, Operativa, Financiera } from './act3';
 import { GanarVsValer, Balance, Cierre } from './act45';
 import { A1, A2, A3, A4, A5, A6, A7, A8 } from './annex';
 
-export type Theme = 'light' | 'dark' | 'graphite' | 'paper2';
+export type Theme = 'light' | 'dark' | 'graphite' | 'paper2' | 'blue';
 export interface SlideDef { id: string; name: string; theme: Theme; C: ComponentType; chapter?: boolean; annex?: boolean; act: string }
 
 export const SLIDES: SlideDef[] = [
@@ -28,9 +29,9 @@ export const SLIDES: SlideDef[] = [
   { id: 'comercial', name: 'Evolución comercial', theme: 'light', C: Comercial, act: 'Acto 3 · La evolución global' },
   { id: 'operativa', name: 'Evolución operativa', theme: 'paper2', C: Operativa, act: 'Acto 3 · La evolución global' },
   { id: 'financiera', name: 'Evolución financiera', theme: 'dark', C: Financiera, act: 'Acto 3 · La evolución global' },
-  { id: 'ganar-valer', name: 'Ganar más no es valer más', theme: 'light', C: GanarVsValer, chapter: true, act: 'Acto 4 · Balance estratégico' },
+  { id: 'ganar-valer', name: 'Ganar más no es valer más', theme: 'blue', C: GanarVsValer, chapter: true, act: 'Acto 4 · Balance estratégico' },
   { id: 'balance', name: 'Qué aprendimos', theme: 'light', C: Balance, act: 'Acto 4 · Balance estratégico' },
-  { id: 'cierre', name: 'Cierre', theme: 'dark', C: Cierre, chapter: true, act: 'Acto 5 · Cierre' },
+  { id: 'cierre', name: 'Cierre', theme: 'light', C: Cierre, chapter: true, act: 'Acto 5 · Cierre' },
   { id: 'a1', name: 'A1 · Precios', theme: 'light', C: A1, annex: true, act: 'Anexo' },
   { id: 'a2', name: 'A2 · Presupuestos', theme: 'light', C: A2, annex: true, act: 'Anexo' },
   { id: 'a3', name: 'A3 · Producción y capacidad', theme: 'light', C: A3, annex: true, act: 'Anexo' },

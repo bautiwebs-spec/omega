@@ -4,7 +4,7 @@ import { TEAM } from '../data';
 const M = 'Geist Mono';
 const d = (n: number) => ({ ['--d' as string]: n });
 
-/* 20 · Ganar más no es valer más */
+/* 20 · Ganar más no es valer más — azul pleno */
 export function GanarVsValer() {
   const rows: [string, number, number][] = [['P1', 38.5, 10.98], ['P2', 99.5, 2.19], ['P3', 22.1, 5.87], ['P4', 20.3, 1.59], ['P5', 44.7, 0.45]];
   const sx = lin(0, 100, 0, 560);
@@ -13,40 +13,38 @@ export function GanarVsValer() {
     <>
       <Eyebrow acc="Acto 4" rest="Balance estratégico" />
       <Source>Informes 1, 2, 3, 5 §3a, §3b · Plan 5 §0</Source>
-      <Title w={1400}>Ganar más no es lo mismo <span className="sub">que valer más.</span></Title>
+      <h2 className="title rv" style={{ fontSize: 96, top: 140, width: 1600, letterSpacing: '-.04em', lineHeight: 1 }}>Ganar más no es lo mismo <span className="sub">que valer más.</span></h2>
       <svg width="1920" height="1080" className="abs" style={{ inset: 0 }} role="img" aria-label="Crecimiento del resultado frente al crecimiento del valor por período">
-        <text x="120" y="340" fontSize="16" fontFamily={M} fill="#77746C" letterSpacing="2">CRECIMIENTO POR PERÍODO · MISMA ESCALA (%)</text>
-        <g transform="translate(120 362)" fontSize="16" fontFamily={M}>
-          <rect width="14" height="14" fill="#C9C4B9" /><text x="22" y="13" fill="#77746C">Resultado después de impuestos</text>
-          <rect x="330" width="14" height="14" fill="#2F5BFF" /><text x="352" y="13" fill="#77746C">Valor de la compañía</text>
+        <g transform="translate(120 370)" fontSize="16" fontFamily={M}>
+          <rect width="14" height="14" fill="rgba(255,255,255,.4)" /><text x="22" y="13" fill="rgba(255,255,255,.8)">Resultado después de impuestos</text>
+          <rect x="330" width="14" height="14" fill="#fff" /><text x="352" y="13" fill="rgba(255,255,255,.8)">Valor de la compañía</text>
         </g>
-        <line x1={X + sx(8)} x2={X + sx(8)} y1="400" y2="935" stroke="#F2602F" strokeDasharray="4 5" />
-        <text x={X + sx(8) + 8} y="950" fontSize="14" fontFamily={M} fill="#F2602F">8%: objetivo del manual para el valor</text>
+        <line x1={X + sx(8)} x2={X + sx(8)} y1="405" y2="935" stroke="#fff" strokeOpacity=".7" strokeDasharray="4 5" />
+        <text x={X + sx(8) + 8} y="955" fontSize="14" fontFamily={M} fill="rgba(255,255,255,.85)">8%: objetivo del manual para el valor · misma escala</text>
         {rows.map(([p, r, v], i) => {
-          const y = 410 + i * 104;
+          const y = 415 + i * 104;
           return (
             <g key={p}>
-              <text x="120" y={y + 40} fontSize="22" fontFamily={M} fill="#0E1424">{p}</text>
-              <rect className="growx" style={d(i)} x={X} y={y} width={sx(r)} height="34" fill="#C9C4B9" />
-              <text x={X + sx(r) + 10} y={y + 24} fontSize="17" fontFamily={M} fill="#3D3C38">+{r.toLocaleString('es-AR')}%</text>
-              <rect className="growx" style={d(3 + i)} x={X} y={y + 40} width={Math.max(3, sx(v))} height="34" fill="#2F5BFF" />
-              <text x={X + Math.max(sx(8), sx(v)) + 12} y={y + 64} fontSize="17" fontFamily={M} fill="#2F5BFF">+{v.toLocaleString('es-AR')}%</text>
+              <text x="120" y={y + 40} fontSize="22" fontFamily={M} fill="#fff">{p}</text>
+              <rect className="growx" style={d(i)} x={X} y={y} width={sx(r)} height="34" fill="rgba(255,255,255,.4)" />
+              <text x={X + sx(r) + 10} y={y + 24} fontSize="17" fontFamily={M} fill="rgba(255,255,255,.85)">+{r.toLocaleString('es-AR')}%</text>
+              <rect className="growx" style={d(3 + i)} x={X} y={y + 40} width={Math.max(3, sx(v))} height="34" fill="#fff" />
+              <text x={X + Math.max(sx(8), sx(v)) + 12} y={y + 64} fontSize="17" fontFamily={M} fontWeight="600" fill="#fff">+{v.toLocaleString('es-AR')}%</text>
             </g>
           );
         })}
       </svg>
-      <Box x={1040} y={330} w={760}>
+      <Box x={1040} y={380} w={760}>
         {[
           ['01', 'Resultados Económicos (41%) es relativo.', 'En P5 el resultado creció 44,7% y el parámetro bajó 19 puntos: Beta ganó $40,5M antes de impuestos; nosotros $25,4M.'],
           ['02', 'Endeudamiento y Solvencia (10%) castigó el préstamo durante cuatro períodos.', 'Desde 2027 tuvimos el ratio más alto del sector. En 2030: 335 puntos contra 394 de Beta, la mayor diferencia.'],
           ['03', 'Innovación de Producto (13%) premia la mejora del período.', 'Sostener los niveles en P2 costó 61 puntos; subir un grado en P3 sumó 106.'],
         ].map(([n, t, x], i) => (
-          <div key={n} className="rv" style={{ ...d(5 + i), borderTop: '2px solid #0E1424', padding: '18px 0 26px' }}>
-            <div style={{ fontSize: 25, fontWeight: 600, lineHeight: 1.22 }}><span className="mono dec" style={{ fontSize: 18 }}>{n} </span>{t}</div>
-            <div style={{ fontSize: 20, lineHeight: 1.4, marginTop: 10, color: '#3D3C38' }}>{x}</div>
+          <div key={n} className="rv" style={{ ...d(5 + i), borderTop: '2px solid rgba(255,255,255,.5)', padding: '16px 0 22px' }}>
+            <div style={{ fontSize: 24, fontWeight: 600, lineHeight: 1.22 }}><span className="mono" style={{ fontSize: 18, opacity: 0.7 }}>{n} </span>{t}</div>
+            <div style={{ fontSize: 19, lineHeight: 1.4, marginTop: 8, color: 'rgba(255,255,255,.82)' }}>{x}</div>
           </div>
         ))}
-        <div className="rv lbl" style={{ ...d(8) }}>El valor se compone de seis parámetros ponderados, medidos contra el resto del sector.</div>
       </Box>
     </>
   );
@@ -117,7 +115,7 @@ export function Balance() {
   );
 }
 
-/* 22 · Cierre */
+/* 22 · Cierre — pantalla partida 2025 / 2030 */
 export function Cierre() {
   const rows: [string, string, string, boolean?][] = [
     ['Valor de la compañía', '3.139', '3.847'],
@@ -130,33 +128,32 @@ export function Cierre() {
     ['Innovación', '5,0', '8,0'],
     ['Endeudamiento', '0,22', '0,35', true],
   ];
+  const y0 = 250, step = 64;
   return (
     <>
+      <div className="abs" style={{ left: 960, top: 0, width: 960, height: 1080, background: '#0A0F1E' }} />
       <Eyebrow acc="Cierre" rest="2025 → 2030" />
-      <Box x={120} y={170} w={880}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 160px 190px', padding: '0 0 12px', borderBottom: '2px solid rgba(243,240,232,.6)' }} className="rv">
-          <div /><div className="lbl" style={{ textAlign: 'right' }}>RECIBIMOS</div><div className="lbl" style={{ textAlign: 'right' }}>ENTREGAMOS</div>
+      <Box x={120} y={170} className="mono rv" style={{ fontSize: 18, letterSpacing: '.12em', color: '#77746C' }}>2025 · LO QUE RECIBIMOS</Box>
+      <Box x={1060} y={170} className="mono rv" style={{ fontSize: 18, letterSpacing: '.12em', color: '#35D0E8' }}>2030 · LO QUE ENTREGAMOS</Box>
+      {rows.map(([k, a, b, r], i) => (
+        <div key={k}>
+          <Box x={120} y={y0 + i * step} w={780} className="rv" d={1 + i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderBottom: '1px solid #D9D4C7', paddingBottom: 12 }}>
+            <span style={{ fontSize: 22, color: '#3D3C38' }}>{k}</span>
+            <span className="mono" style={{ fontSize: 28, color: '#77746C' }}>{a}</span>
+          </Box>
+          <Box x={1060} y={y0 + i * step - 8} w={740} className="rv" d={2 + i} style={{ borderBottom: '1px solid rgba(243,240,232,.12)', paddingBottom: 6 }}>
+            <span className="big" style={{ fontSize: 44, color: r ? 'var(--risk)' : '#F3F0E8' }}>{b}</span>
+          </Box>
         </div>
-        {rows.map(([k, a, b, r], i) => (
-          <div key={k} className="rv" style={{ ...d(1 + i), display: 'grid', gridTemplateColumns: '1fr 160px 190px', alignItems: 'baseline', padding: '15px 0', borderBottom: '1px solid rgba(243,240,232,.12)' }}>
-            <div style={{ fontSize: 22, color: '#C8CCD6' }}>{k}</div>
-            <div className="mono" style={{ fontSize: 26, textAlign: 'right', color: '#8C93A6' }}>{a}</div>
-            <div className="big" style={{ fontSize: 40, textAlign: 'right', color: r ? 'var(--risk)' : '#F3F0E8' }}>{b}</div>
-          </div>
-        ))}
-        <div className="lbl rv" style={{ ...d(11), marginTop: 16 }}>Fuente: Diagnóstico · Informe 5 §3b, §7</div>
+      ))}
+      <Box x={1060} y={860} w={740} className="rv" d={11} style={{ color: '#F3F0E8' }}>
+        <div style={{ fontSize: 36, lineHeight: 1.15, letterSpacing: '-.02em', fontWeight: 500 }}><span style={{ color: '#5B82FF' }}>Ω</span> Ninguna decisión es de un área sola.</div>
+        <div style={{ fontSize: 18, color: '#8C93A6', marginTop: 14 }}>La deuda de la expansión fue lo que nos separó del primer puesto.</div>
       </Box>
-      <Box x={1120} y={170} w={680} className="rv" d={6}>
-        <div style={{ fontWeight: 600, fontSize: 150, lineHeight: 0.8, letterSpacing: '-.06em', color: '#5B82FF' }}>Ω</div>
-        <div style={{ fontSize: 44, lineHeight: 1.16, letterSpacing: '-.025em', fontWeight: 500, marginTop: 44 }}>
-          Administrar OMEGA fue aprender que ninguna decisión es de un área sola.
-        </div>
-        <div style={{ fontSize: 24, lineHeight: 1.45, marginTop: 28, color: '#B9BECB' }}>
-          La marca crea demanda, la demanda pide capacidad, la capacidad pide financiamiento, y el financiamiento se paga en valor.
-          Crecimos 2,35 veces en ingresos y casi 6 veces en resultado; la deuda de la expansión fue lo que nos separó del primer puesto.
-        </div>
+      <Box x={120} y={880} w={780} className="rv" d={12}>
+        <div style={{ fontSize: 20, color: '#3D3C38' }}>{TEAM.join(' · ')}</div>
+        <div className="lbl" style={{ marginTop: 10, fontSize: 14 }}>Fuente: Diagnóstico · Informe 5 §3b, §7</div>
       </Box>
-      <Box x={1120} y={960} w={680} className="rv" d={9}><div style={{ fontSize: 20, color: '#8C93A6' }}>{TEAM.join(' · ')}</div></Box>
     </>
   );
 }

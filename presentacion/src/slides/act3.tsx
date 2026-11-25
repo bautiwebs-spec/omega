@@ -43,17 +43,33 @@ export function EvolucionValor() {
   );
 }
 
-/* 16 · Ingresos y resultados */
+/* 16 · Ingresos y resultados — título en columna lateral */
 export function IngresosResultados() {
-  const x0 = 230, bw = 120, gap = 66;
-  const sy = lin(0, 120e6, 0, 440);
-  const base = 880;
+  const x0 = 760, bw = 118, gap = 50;
+  const sy = lin(0, 120e6, 0, 430);
+  const base = 830;
   const opm = serie.resOperativo.map((r, i) => (r / serie.ingresos[i]) * 100);
   return (
     <>
-      <Eyebrow acc="Acto 3" rest="Ingresos, resultados y márgenes" />
+      <div className="abs" style={{ left: 680, top: 0, width: 1240, height: 1080, background: '#E9E5DA' }} />
+      <Eyebrow acc="Acto 3" rest="Ingresos y resultados" />
       <Source>Diagnóstico §4 · Informes 1–5 §3b, §3e · Plan 5 §0</Source>
-      <Title w={1560}>Ingresos ×2,35 y resultado ×5,87: <span className="sub">crecimos más en rentabilidad que en tamaño.</span></Title>
+      <Box x={120} y={150} w={500} className="rv">
+        <h2 style={{ fontWeight: 500, fontSize: 54, lineHeight: 1.06, letterSpacing: '-.03em' }}>Ingresos ×2,35 y resultado ×5,87: <span className="muted">crecimos más en rentabilidad que en tamaño.</span></h2>
+      </Box>
+      <Box x={120} y={540} w={480} className="rv" d={6}>
+        {[
+          ['P1', 'Precio, tecnología y DomoHogar: resultado +38,5% con 12,4% más de ingresos.'],
+          ['P2', 'La planta de USA: ingresos +43,3% y resultado +99,5%.'],
+          ['P4', 'Precio: margen 50%, el más alto de la etapa.'],
+          ['P5', 'Segunda planta: ingresos +30,4% y resultado +44,7%.'],
+        ].map(([p, t]) => (
+          <div key={p} style={{ borderTop: '1px solid var(--line)', padding: '12px 0', display: 'grid', gridTemplateColumns: '46px 1fr' }}>
+            <span className="mono dec" style={{ fontSize: 16 }}>{p}</span>
+            <div style={{ fontSize: 18, lineHeight: 1.36 }}>{t}</div>
+          </div>
+        ))}
+      </Box>
       <svg width="1920" height="1080" className="abs" style={{ inset: 0 }} role="img" aria-label="Ingresos y resultado después de impuestos por año">
         {[0, 40e6, 80e6, 120e6].map((v) => (
           <g key={v}>
@@ -77,27 +93,14 @@ export function IngresosResultados() {
             </g>
           );
         })}
-        <g fontSize="14" fontFamily={M} fill="#77746C" textAnchor="end">
-          <text x={x0 - 30} y={base + 64}>MARGEN</text><text x={x0 - 30} y={base + 92}>RES. OP./ING.</text><text x={x0 - 30} y={base + 120}>ROE</text>
+        <g fontSize="13" fontFamily={M} fill="#77746C" textAnchor="end">
+          <text x={x0 - 24} y={base + 64}>MARGEN</text><text x={x0 - 24} y={base + 92}>RES.OP./ING.</text><text x={x0 - 24} y={base + 120}>ROE</text>
         </g>
-        <g transform="translate(230 400)" fontSize="16" fontFamily={M}>
+        <g transform={`translate(${x0} 320)`} fontSize="16" fontFamily={M}>
           <rect width="14" height="14" fill="#C9C4B9" /><text x="22" y="13" fill="#77746C">Ingresos</text>
           <rect x="130" width="14" height="14" fill="#2F5BFF" /><text x="152" y="13" fill="#77746C">Resultado después de impuestos</text>
         </g>
       </svg>
-      <Box x={1420} y={420} w={380} className="rv" d={8}>
-        {[
-          ['P1', 'Precio, tecnología y DomoHogar: resultado +38,5% con 12,4% más de ingresos.'],
-          ['P2', 'La planta de USA: ingresos +43,3% y resultado +99,5%.'],
-          ['P4', 'Precio: margen 50%, el más alto de la etapa.'],
-          ['P5', 'Segunda planta: ingresos +30,4% y resultado +44,7%.'],
-        ].map(([p, t]) => (
-          <div key={p} style={{ borderTop: '1px solid var(--line)', padding: '14px 0' }}>
-            <span className="mono dec" style={{ fontSize: 16 }}>{p}</span>
-            <div style={{ fontSize: 19, lineHeight: 1.36, marginTop: 4 }}>{t}</div>
-          </div>
-        ))}
-      </Box>
     </>
   );
 }

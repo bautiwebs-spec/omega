@@ -43,10 +43,10 @@ export const Title = ({ children, w = 1280, top, size }: { children: ReactNode; 
 );
 
 /** Hilo de la línea de tiempo: 2025 + cinco períodos. `now` = índice 1..5 */
-export function Thread({ now }: { now: number }) {
+export function Thread({ now, left }: { now: number; left?: number }) {
   const pos = (i: number) => `${(i / 5) * 100}%`;
   return (
-    <div className="thread" aria-hidden>
+    <div className="thread" aria-hidden style={left ? { left } : undefined}>
       <div className="rail" />
       <div className="fill" style={{ width: pos(now) }} />
       {SHORT.map((s, i) => (
@@ -73,11 +73,16 @@ export function Kpi({ label, value, note, size = 76, color, d }: { label: string
   );
 }
 
-export const Concepts = ({ items, bottom }: { items: string[]; bottom?: number }) => (
-  <div className="concepts" style={{ bottom }}>
+export const Concepts = ({ items, bottom, left }: { items: string[]; bottom?: number; left?: number }) => (
+  <div className="concepts" style={{ bottom, left }}>
     Conceptos · {items.map((c, i) => <b key={c}>{c}{i < items.length - 1 ? ' · ' : ''}</b>)}
   </div>
 );
 
 /** Escala lineal */
 export const lin = (d0: number, d1: number, r0: number, r1: number) => (v: number) => r0 + ((v - d0) / (d1 - d0)) * (r1 - r0);
+
+/** Panel de color a sangre (para diapositivas partidas). */
+export const Panel = ({ x = 0, w, bg, color = '#F3F0E8', children, y = 0, h = 1080 }: { x?: number; w: number; bg: string; color?: string; children?: ReactNode; y?: number; h?: number }) => (
+  <div className="abs panel" style={{ left: x, top: y, width: w, height: h, background: bg, color }}>{children}</div>
+);

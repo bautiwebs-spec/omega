@@ -56,9 +56,9 @@ function title(s: S, t: Theme, main: string, sub = '', w = 1560, size = 60) {
     ...(sub ? [{ text: sub, options: { color: dk ? C.muteD : C.mute } }] : []),
   ], 120, 140, w, 150, { fontSize: pt(size), bold: false, lineSpacingMultiple: 0.95 });
 }
-function thread(s: S, t: Theme, now: number) {
+function thread(s: S, t: Theme, now: number, x0 = 120) {
   const dk = isDark(t);
-  const x0 = 120, w = 1680, y = 994;
+  const w = 1800 - x0, y = 994;
   hline(s, x0, y, w, dk ? '3A4156' : 'CFC9BA', 1.5);
   hline(s, x0, y, (w * now) / 5, C.omega, 1.5);
   SHORT.forEach((lab, i) => {
@@ -68,8 +68,8 @@ function thread(s: S, t: Theme, now: number) {
     txt(s, lab, cx - 40, y + 16, 80, 20, { fontSize: 7, align: 'center', color: i === now ? C.dec : dk ? C.muteD : C.mute, bold: i === now });
   });
 }
-function concepts(s: S, t: Theme, items: string[], y = 952) {
-  txt(s, [{ text: 'CONCEPTOS  ·  ', options: { color: isDark(t) ? C.muteD : C.mute } }, { text: items.join('  ·  ').toUpperCase(), options: { color: isDark(t) ? C.white : C.ink, bold: true } }], 120, y, 1600, 22, { fontSize: 7.5, charSpacing: 1.5 });
+function concepts(s: S, t: Theme, items: string[], y = 952, x = 120) {
+  txt(s, [{ text: 'CONCEPTOS  ·  ', options: { color: isDark(t) ? C.muteD : C.mute } }, { text: items.join('  ·  ').toUpperCase(), options: { color: isDark(t) ? C.white : C.ink, bold: true } }], x, y, 1800 - x, 22, { fontSize: 7.5, charSpacing: 1.5 });
 }
 function kpi(s: S, t: Theme, x: number, y: number, w: number, label: string, value: string, note = '', color?: string, size = 64) {
   const dk = isDark(t);
@@ -212,56 +212,58 @@ const axisTxt = (dk: boolean) => ({ catAxisLabelColor: dk ? C.muteD : C.mute, va
   notes(s, 'decisiones');
 }
 
-// 5 P1 decisión
+// 5 P1 decisión — apertura partida
+function rawSlide(color: string) { const s = pptx.addSlide(); s.background = { color }; return s; }
+function eyebrowAt(s: S, x: number, runs: PptxGenJS.TextProps[]) { txt(s, runs, x, 84, 900, 30, { fontSize: 10, charSpacing: 3 }); }
+function opening(s: S, num: string, label: string, q: string, a: string, bgc: string, numC: string) {
+  rect(s, 0, 0, 700, 1080, bgc);
+  eyebrowAt(s, 120, [{ text: num + '  ', options: { color: numC === 'FFFFFF' ? 'FFFFFF' : C.dec, bold: true } }, { text: '·  ' + label.toUpperCase(), options: { color: numC === 'FFFFFF' ? 'DDE4FF' : C.muteD } }]);
+  txt(s, num, 110, 150, 560, 280, { fontSize: 125, bold: true, color: numC });
+  txt(s, q, 120, 430, 500, 220, { fontSize: 23, color: numC === 'FFFFFF' ? 'FFFFFF' : C.white });
+  txt(s, '→ ' + a.toUpperCase(), 120, 660, 520, 30, { fontSize: 9, color: numC, charSpacing: 2 });
+}
 {
-  const t: Theme = 'light';
-  const s = base(t, { num: '01', rest: 'Período 1 · 2026 · Optimizar antes de expandir' }, 'Plan 1 §1–§9 · Informe 1 §2');
-  title(s, t, 'Antes de salir, rentabilizar lo que teníamos:', 'no había producto libre para abastecer otro mercado.');
-  txt(s, 'ALTERNATIVAS EVALUADAS', 120, 340, 560, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  const al: [string, string, string, boolean][] = [
-    ['DESCARTADA', 'Entrar ya a un mercado nuevo', 'TecnoPersonal al 99% y Pequeño Electrodoméstico al 95,7%: repartiríamos la misma producción. Sin datos propios era "jugado".', false],
-    ['POSTERGADA', 'Construir una fábrica', 'Dónde vender define dónde producir. Compramos los informes de USA y UE ($70.000) para decidir en el P2.', false],
-    ['ELEGIDA', 'Rentabilizar Japón', 'Ganar margen donde sobra demanda y llenar la capacidad ociosa de DomoHogar.', true],
-  ];
-  al.forEach(([tag, h, b, ok], i) => {
-    const y = 382 + i * 185;
-    hline(s, 120, y, 560, ok ? C.dec : C.line, ok ? 2.5 : 0.75);
-    txt(s, tag, 120, y + 14, 140, 24, { fontSize: 7.5, bold: true, color: ok ? 'FFFFFF' : C.mute, fill: { color: ok ? C.dec : C.paper }, align: 'center', valign: 'middle' });
-    txt(s, h, 120, y + 50, 560, 30, { fontSize: 12.5, bold: true, color: C.ink });
-    txt(s, b, 120, y + 86, 560, 90, { fontSize: 9.5, color: C.ink2 });
+  const s = rawSlide(C.paper);
+  opening(s, '01', 'Período 1 · 2026', '¿Salir a otro mercado o rentabilizar el que ya teníamos?', 'Rentabilizar Japón', C.night, C.dec);
+  [['DESCARTADA · ', 'Mercado nuevo ya', 'TP al 99% y PE al 95,7%: no había producto libre.'], ['POSTERGADA · ', 'Fábrica nueva', 'Dónde vender define dónde producir: compramos informes ($70.000).']].forEach(([t, h, x], i) => {
+    hline(s, 120, 760 + i * 100, 500, '2A3248', 0.75);
+    txt(s, [{ text: t, options: { color: C.muteD, fontSize: 7.5 } }, { text: h + '\n', options: { color: C.white, bold: true, fontSize: 9.5 } }, { text: x, options: { color: 'B9BECB', fontSize: 8.5 } }], 120, 772 + i * 100, 500, 80, {});
   });
-  txt(s, 'CINCO PALANCAS, SIN CONSTRUIR NADA', 780, 340, 1000, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  tableRows(s, t, [
+  txt(s, 'Fuente: Plan 1 §1–§9 · Informe 1 §2', 1180, 86, 620, 30, { fontSize: 7.5, color: C.mute, align: 'right' });
+  txt(s, [{ text: 'Cinco palancas, ', options: { color: C.ink } }, { text: 'sin construir nada.', options: { color: C.mute } }], 800, 150, 1000, 80, { fontSize: 26 });
+  tableRows(s, 'light', [
     ['PALANCA', 'ANTES → DESPUÉS', 'POR QUÉ'],
     ['Precio TecnoPersonal', '228 → 238', 'Demanda ≈ 2 veces la producción: se sube sin perder unidades'],
     ['Innovación PE / DH', '$430k / $350k → $600k / $850k', 'Superar el mínimo del manual para pasar de nivel 4 a 5'],
     ['Tecnología industrial', '$250k → $750k', 'Nivel 7 → 8 para bajar el costo unitario'],
     ['Promoción', '$3,72M → $4,60M', 'Reforzar las marcas más bajas: PE (52) y DH (55)'],
     ['Producción DomoHogar', '25.000 → 32.000 u.', 'Usar la planta que trabajaba al 66,7%'],
-  ], 780, 376, [240, 330, 450], { fontSize: 10, boldCol0: true, rowH: 62, left: true });
-  txt(s, [{ text: 'Plan ≠ ejecución: ', options: { color: C.dec, bold: true } }, { text: 'el plan proponía bajar los dividendos a 50%; se mantuvieron en 80%.', options: { color: C.mute } }], 780, 790, 1020, 26, { fontSize: 9 });
-  concepts(s, t, ['Capacidad instalada', 'Precio según demanda', 'Costo unitario', 'Planificación estratégica']);
-  thread(s, t, 1);
+  ], 800, 290, [230, 320, 450], { fontSize: 10, boldCol0: true, rowH: 62, left: true });
+  txt(s, [{ text: 'Plan ≠ ejecución: ', options: { color: C.dec, bold: true } }, { text: 'el plan proponía bajar los dividendos a 50%; se mantuvieron en 80%.', options: { color: C.mute } }], 800, 700, 1000, 26, { fontSize: 9 });
+  concepts(s, 'light', ['Capacidad instalada', 'Precio según demanda', 'Costo unitario', 'Planificación'], 952, 800);
+  thread(s, 'light', 1, 800);
   notes(s, 'p1-decision');
 }
 
-// 6 P1 resultado
+// 6 P1 resultado — número protagonista
 {
   const t: Theme = 'light';
   const s = base(t, { num: '01', rest: 'Período 1 · Resultados' }, 'Informe 1 §3a, §3b, §3c, §3g, §4e');
-  title(s, t, '+10,98% de valor sin construir nada,', 'y llegamos al techo de capacidad.');
-  kpi(s, t, 120, 330, 400, 'Valor de la compañía', '3.483', '+10,98% · 2°, a 30 puntos de Beta');
-  kpi(s, t, 550, 330, 400, 'Resultado después de impuestos', '+38,5%', '$3,20M → $4,43M');
-  kpi(s, t, 980, 330, 400, 'Valor de marca', '55 → 79', 'la más alta del sector', C.omega);
-  kpi(s, t, 1410, 330, 400, 'Costo unitario (tecnología 7 → 8)', '−5,0% a −6,3%', 'ahorro ≈ $1,6M por $0,5M invertidos', undefined, 52);
-  txt(s, 'DEMANDA PROPIA CUBIERTA POR LÍNEA, 2026 (%)', 120, 600, 900, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
+  title(s, t, 'Crecimos sin construir nada,', 'y llegamos al techo de capacidad.', 1100, 46);
+  txt(s, 'VALOR DE LA COMPAÑÍA', 120, 300, 600, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
+  txt(s, '+10,98%', 110, 320, 1000, 260, { fontSize: 112, bold: true, color: C.omega });
+  txt(s, '3.139 → 3.483 · 2° del sector, a 30 puntos de Beta · objetivo del manual: 8%', 120, 590, 1000, 30, { fontSize: 12, color: C.ink2 });
+  txt(s, 'DEMANDA PROPIA CUBIERTA · 2026 (%)', 120, 690, 900, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
   s.addChart(pptx.ChartType.bar, [{ name: 'Cubierta', labels: ['TecnoPersonal (≈38.000 sin atender)', 'Pequeño Electr. (≈72.000)', 'DomoHogar (≈6.000)'], values: [62, 74, 86] }], {
-    x: p(110), y: p(630), w: p(920), h: p(220), barDir: 'bar', chartColors: [C.omega], valAxisMaxVal: 100, valAxisMinVal: 0, showValue: true, dataLabelFormatCode: '0"%"',
-    dataLabelColor: C.ink, dataLabelFontSize: 9, ...axisTxt(false), catAxisOrientation: 'maxMin', showLegend: false, barGapWidthPct: 60,
+    x: p(110), y: p(720), w: p(960), h: p(200), barDir: 'bar', chartColors: [C.omega], valAxisMaxVal: 100, valAxisMinVal: 0, valAxisHidden: true, showValue: true, dataLabelFormatCode: '0"%"',
+    dataLabelColor: C.ink, dataLabelFontSize: 9, ...axisTxt(false), valGridLine: { style: 'none' } as any, catAxisOrientation: 'maxMin', showLegend: false, barGapWidthPct: 60,
+  } as any);
+  [['Resultado después de impuestos', '+38,5%', '$3,20M → $4,43M'], ['Valor de marca', '55 → 79', 'la más alta del sector'], ['Costo unitario (tecnología 7 → 8)', '−5,0% a −6,3%', 'ahorro ≈ $1,6M por $0,5M invertidos']].forEach(([l, v, n], i) => {
+    hline(s, 1200, 300 + i * 150, 600, C.ink, 1.5);
+    kpi(s, t, 1200, 314 + i * 150, 600, l, v, n, undefined, 46);
   });
-  txt(s, [{ text: '≈116.000 unidades sin atender: ', options: { color: C.dec, bold: true } }, { text: 'quedarse en Japón ya no alcanzaba para crecer.', options: { color: C.ink } }], 120, 866, 960, 30, { fontSize: 11 });
-  txt(s, 'PROYECTADO VS. REALIZADO', 1140, 600, 660, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  tableRows(s, t, [['', 'PLAN', 'RESULTADO'], ['Resultado', 'similar a 2025', '+38,5%'], ['DomoHogar', '32.000 u.', '35.574 u. (+28,1%)'], ['Caja', 'ajustada', '$2,6M → $10,1M'], ['Dividendos', '50%', '80% (sin cambio)']], 1140, 636, [190, 210, 260], { fontSize: 10, hiCol: 2, rowH: 50 });
+  hline(s, 1200, 760, 600, C.dec, 2);
+  txt(s, [{ text: '≈116.000 unidades sin atender. ', options: { color: C.dec, bold: true } }, { text: 'Proyectamos un resultado parecido a 2025 y creció 38,5%: quedarse en Japón ya no alcanzaba.', options: { color: C.ink } }], 1200, 776, 600, 120, { fontSize: 10 });
   thread(s, t, 1);
   notes(s, 'p1-resultado');
 }
@@ -342,111 +344,110 @@ const axisTxt = (dk: boolean) => ({ catAxisLabelColor: dk ? C.muteD : C.mute, va
   notes(s, 'p2-costo');
 }
 
-// 10 P3
+// 10 P3 — apertura partida en azul
 {
-  const t: Theme = 'light';
-  const s = base(t, { num: '03', rest: 'Período 3 · 2028 · Consolidar y corregir' }, 'Plan 3 §1–§8 · Informe 3 §2, §3');
-  title(s, t, 'Mismo gasto, mejor repartido:', 'sacamos promoción donde la marca estaba saturada y la pusimos en innovación.');
-  txt(s, 'PRESUPUESTO ESTRATÉGICO · $M · TOTAL 9,6 EN AMBOS', 120, 328, 760, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  s.addChart(pptx.ChartType.bar, [
-    { name: 'Promoción', labels: ['P2 · 2027', 'P3 · 2028'], values: [6.9, 6.4] },
-    { name: 'Innovación', labels: ['P2 · 2027', 'P3 · 2028'], values: [1.85, 2.2] },
-    { name: 'Tecnología', labels: ['P2 · 2027', 'P3 · 2028'], values: [0.85, 1.0] },
-  ], { x: p(110), y: p(360), w: p(720), h: p(520), barDir: 'col', barGrouping: 'stacked', chartColors: [C.ink, C.omega, C.cyan], showValue: true, dataLabelFormatCode: '0.0#', dataLabelColor: 'FFFFFF', dataLabelFontSize: 9, ...axisTxt(false), valAxisHidden: true, valGridLine: { style: 'none' } as any, showLegend: true, legendPos: 'r', legendFontFace: F, legendFontSize: 9, legendColor: C.ink, barGapWidthPct: 70 } as any);
+  const s = rawSlide(C.paper);
+  opening(s, '03', 'Período 3 · 2028', '¿Cómo seguir creciendo sin gastar más?', 'Mismo presupuesto, mejor repartido', C.omega, 'FFFFFF');
+  txt(s, 'PRESUPUESTO ESTRATÉGICO · $M · TOTAL 9,6', 120, 770, 520, 22, { fontSize: 7.5, color: 'DDE4FF', charSpacing: 2 });
+  [['Promoción', '6,90 → 6,40', '−0,50'], ['Innovación', '1,85 → 2,20', '+0,35'], ['Tecnología', '0,85 → 1,00', '+0,15']].forEach(([a, b, c], i) => {
+    hline(s, 120, 802 + i * 60, 500, '7F9BFF', 0.75);
+    txt(s, a, 120, 814 + i * 60, 170, 30, { fontSize: 10.5, bold: true, color: 'FFFFFF' });
+    txt(s, b, 290, 814 + i * 60, 200, 30, { fontSize: 9.5, color: 'DDE4FF' });
+    txt(s, c, 500, 812 + i * 60, 120, 30, { fontSize: 12, color: 'FFFFFF', align: 'right' });
+  });
+  txt(s, 'Fuente: Plan 3 §1–§8 · Informe 3 §2, §3', 1180, 86, 620, 30, { fontSize: 7.5, color: C.mute, align: 'right' });
+  txt(s, [{ text: 'Sacamos promoción donde la marca estaba saturada ', options: { color: C.ink } }, { text: 'y la pusimos en innovación.', options: { color: C.mute } }], 800, 150, 1000, 170, { fontSize: 26 });
   const k: [string, string, string, string?][] = [
     ['Innovación (parámetro)', '498 → 604', '+106 pts · PE y DH de 5 a 6'], ['Tecnología industrial', '9 → 10', 'el máximo de la escala'],
     ['Ventas en USA', '+36,2%', 'marca 26 → 41'], ['Costo DomoHogar USA', '$431 → $377', 'al cargar la planta 10k → 17k'],
     ['Endeudamiento', '0,61 → 0,52', 'sin préstamos · caja $23,7M'], ['Valor de la compañía', '3.769 · 1°', 'Beta penalizada (×0,95)', C.dec],
   ];
-  k.forEach(([a, b, c, col], i) => kpi(s, t, 880 + (i % 2) * 480, 340 + Math.floor(i / 2) * 150, 460, a, b, c, col, 46));
-  txt(s, [{ text: 'La marca en Japón llegó a 100 en las tres líneas aun con $600.000 menos de promoción. ', options: { color: C.ink2 } }, { text: 'Pendiente: ', options: { bold: true, color: C.ink } }, { text: 'precios sin cambios con la demanda 60% por encima de la capacidad (margen 48%, 4° del sector).', options: { color: C.ink2 } }], 880, 830, 920, 80, { fontSize: 9.5 });
-  thread(s, t, 3);
+  k.forEach(([a, b, c, col], i) => kpi(s, 'light', 800 + (i % 2) * 520, 390 + Math.floor(i / 2) * 150, 480, a, b, c, col, 44));
+  txt(s, [{ text: 'La marca en Japón llegó a 100 en las tres líneas con $600.000 menos de promoción. ', options: { color: C.ink2 } }, { text: 'Pendiente: ', options: { bold: true, color: C.ink } }, { text: 'precios sin cambios con la demanda 60% por encima de la capacidad.', options: { color: C.ink2 } }], 800, 850, 1000, 70, { fontSize: 9.5 });
+  thread(s, 'light', 3, 800);
   notes(s, 'p3');
 }
 
-// 11 P4 decisión
+// 11 P4 decisión — burbujas
 {
   const t: Theme = 'light';
   const s = base(t, { num: '04', rest: 'Período 4 · 2029 · Rentabilidad y eficiencia' }, 'Plan 4 §1–§9 · sin Informe 4 (error de la simulación)');
   title(s, t, 'El producto con más margen porcentual', 'no es el que más dinero deja.');
-  txt(s, 'MARGEN % (2028)', 120, 330, 380, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  s.addChart(pptx.ChartType.bar, [{ name: 'Margen %', labels: ['TecnoPersonal', 'Pequeño Electr.', 'DomoHogar'], values: [52.9, 61.8, 43.8] }], {
-    x: p(110), y: p(360), w: p(410), h: p(300), barDir: 'bar', chartColors: ['B9B3A6', C.ink, 'B9B3A6'], showValue: true, dataLabelFormatCode: '0.0"%"', dataLabelFontSize: 9, valAxisHidden: true, valAxisMaxVal: 80, valAxisMinVal: 0, ...axisTxt(false), valGridLine: { style: 'none' } as any, catAxisOrientation: 'maxMin', showLegend: false,
-  } as any);
-  txt(s, 'MARGEN POR UNIDAD ($)', 540, 330, 380, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  s.addChart(pptx.ChartType.bar, [{ name: '$ por unidad', labels: ['TecnoPersonal', 'Pequeño Electr.', 'DomoHogar'], values: [120, 43, 295] }], {
-    x: p(530), y: p(360), w: p(380), h: p(300), barDir: 'bar', chartColors: ['B9B3A6', 'B9B3A6', C.dec], showValue: true, dataLabelFormatCode: '"≈$"0', dataLabelFontSize: 9, valAxisHidden: true, valAxisMaxVal: 360, valAxisMinVal: 0, ...axisTxt(false), catAxisLabelColor: bg(t), valGridLine: { style: 'none' } as any, catAxisOrientation: 'maxMin', showLegend: false,
-  } as any);
-  txt(s, 'Margen bruto total: TP ≈$11,2M · PE ≈$13,5M · DH ≈$17,9M. Cada planta tiene capacidad separada por producto: producir menos PE no libera capacidad para DH. Se decidió llenar las tres líneas y subir el precio.', 120, 690, 790, 140, { fontSize: 10, color: C.ink2 });
-  txt(s, 'DECISIONES DEL PERÍODO', 980, 330, 820, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  tableRows(s, t, [
-    ['', ''], ['Precios Japón', 'TP 238 → 250 · DH 685 → 705 · PE 74 sin cambio'], ['Precios USA', '195 → 205 · 59 → 61 · 640 → 660'],
-    ['Tecnología', '$1,0M → $0,4M: nivel 10, retorno marginal ≈ 0'], ['Promoción', 'Japón $4,0M → $3,3M · USA $2,4M → $3,0M'],
-    ['Innovación', 'PE y DH de 6 a 7 ($2,2M → $2,55M)'], ['Producción', 'DomoHogar a capacidad completa: 63.000'], ['Dividendos', '50% → 30% para bajar el endeudamiento'],
-  ].map((r) => r.map(String)), 980, 352, [190, 630], { fontSize: 10, boldCol0: true, rowH: 52, left: true });
-  txt(s, 'Subas de 3% a 5%: todos los precios quedan iguales o debajo del competidor más caro.', 980, 790, 820, 40, { fontSize: 9, color: C.mute });
-  concepts(s, t, ['Margen de contribución', 'Estrategia de precios', 'Retorno marginal', 'Eficiencia']);
+  const X0 = 200, X1 = 860, Y0 = 870, Y1 = 380;
+  const sx = (v: number) => X0 + ((v - 40) / 26) * (X1 - X0); const sy = (v: number) => Y0 - (v / 340) * (Y0 - Y1);
+  [0, 100, 200, 300].forEach((v) => { hline(s, X0, sy(v), X1 - X0, v ? 'E2DDD0' : C.ink, v ? 0.5 : 1); txt(s, '$' + v, X0 - 80, sy(v) - 10, 66, 20, { fontSize: 7.5, color: C.mute, align: 'right' }); });
+  [40, 45, 50, 55, 60, 65].forEach((v) => txt(s, v + '%', sx(v) - 30, Y0 + 12, 60, 20, { fontSize: 7.5, color: C.mute, align: 'center' }));
+  txt(s, 'MARGEN % (2028) →', X1 - 300, Y0 + 40, 300, 20, { fontSize: 7.5, color: C.mute, align: 'right' });
+  txt(s, '↑ MARGEN POR UNIDAD · TAMAÑO = MARGEN BRUTO TOTAL', X0 - 80, Y1 - 40, 760, 20, { fontSize: 7.5, color: C.mute });
+  ([['TecnoPersonal', 52.9, 120, 11.2], ['Pequeño Electrodoméstico', 61.8, 43, 13.5], ['DomoHogar', 43.8, 295, 17.9]] as [string, number, number, number][]).forEach(([n, pc, u, m]) => {
+    const r = Math.sqrt(m) * 17; const cx = sx(pc), cy = sy(u);
+    s.addShape(pptx.ShapeType.ellipse, { x: p(cx - r), y: p(cy - r), w: p(2 * r), h: p(2 * r), fill: { color: u > 200 ? C.dec : pc > 60 ? C.ink : 'B9B3A6' }, line: { type: 'none' } as any });
+    const left = pc > 60;
+    txt(s, [{ text: n + '\n', options: { bold: true, fontSize: 10.5, color: C.ink } }, { text: `${dec(pc, 1)}% · ≈$${u}/u · bruto ≈$${dec(m, 1)}M`, options: { fontSize: 7.5, color: C.ink2 } }], left ? cx - r - 400 : cx + r + 14, cy - 18, 386, 60, { align: left ? 'right' : 'left' });
+  });
+  txt(s, 'DECISIONES DEL PERÍODO', 1080, 330, 720, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
+  tableRows(s, t, [['', ''], ['Precios Japón', 'TP 238 → 250 · DH 685 → 705 · PE 74 sin cambio'], ['Precios USA', '195 → 205 · 59 → 61 · 640 → 660'], ['Tecnología', '$1,0M → $0,4M: nivel 10, retorno marginal ≈ 0'], ['Promoción', 'Japón $4,0M → $3,3M · USA $2,4M → $3,0M'], ['Innovación', 'PE y DH de 6 a 7 ($2,2M → $2,55M)'], ['Producción', 'DomoHogar a capacidad completa: 63.000'], ['Dividendos', '50% → 30% para bajar el endeudamiento']], 1080, 352, [170, 550], { fontSize: 9.5, boldCol0: true, rowH: 52, left: true });
+  txt(s, 'Cada planta tiene capacidad separada por producto: no se puede pasar capacidad de PE a DH. Subas de 3% a 5%.', 1080, 790, 720, 60, { fontSize: 8.5, color: C.mute });
   thread(s, t, 4);
   notes(s, 'p4-decision');
 }
 
-// 12 P4 resultado
+// 12 P4 resultado — cara a cara
 {
   const t: Theme = 'paper2';
   const s = base(t, { num: '04', rest: 'Período 4 · Resultados' }, 'Plan 5 §0, §4 · Informe 5 §3 (columna 2029) · planilla D4');
-  title(s, t, 'Ganamos margen sin perder ventas', 'y quedamos a 5 puntos del primer puesto.');
-  kpi(s, t, 120, 330, 400, 'Margen sobre ingresos', '48% → 50%', '', C.omega, 56);
-  kpi(s, t, 550, 330, 400, 'Resultado después de impuestos', '+20,3%', '$10,79M → $12,98M', undefined, 56);
-  kpi(s, t, 980, 330, 400, 'Endeudamiento', '0,52 → 0,42', 'caja $39,4M sin préstamos', undefined, 56);
-  kpi(s, t, 1410, 330, 400, 'Valor de la compañía', '3.829 · 2°', 'Beta 3.834 (+5 puntos)', undefined, 56);
-  txt(s, 'PROYECTADO VS. REALIZADO', 120, 600, 900, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  tableRows(s, t, [['', 'PLAN 4', 'RESULTADO'], ['Resultado antes de impuestos', '≈ +$3,3M (+23%)', '+$2,96M (+20,3%)'], ['Margen sobre ingresos', '≈ 49%', '50%'], ['Endeudamiento', '≈ 0,42', '0,42'], ['Unidades', 'sostenerlas', '467.700 (+0,4%)']], 120, 636, [380, 260, 260], { fontSize: 10, hiCol: 2, rowH: 52 });
-  hline(s, 1140, 610, 660, C.risk, 2.5);
-  txt(s, 'EFECTO NO BUSCADO', 1140, 630, 660, 22, { fontSize: 8.5, color: C.risk, charSpacing: 2.5 });
-  txt(s, '−14,9%', 1140, 664, 660, 70, { fontSize: 30, bold: true, color: C.ink });
-  txt(s, 'Pequeño Electrodoméstico en Japón: 234.824 → 199.736 unidades. A 74 quedó más caro que Delta (72). Se corrigió en el P5 bajando a 72.', 1140, 750, 660, 120, { fontSize: 10, color: C.ink2 });
+  title(s, t, 'Ganamos margen sin perder ventas', 'y quedamos a 5 puntos del primer puesto.', 1560, 46);
+  txt(s, 'OMEGA · 2°', 120, 290, 600, 26, { fontSize: 10, color: C.omega, charSpacing: 2.5 });
+  txt(s, '3.829', 110, 310, 760, 220, { fontSize: 92, bold: true, color: C.omega });
+  txt(s, [{ text: '5\n', options: { fontSize: 58, bold: true, color: C.dec } }, { text: 'PUNTOS DE DIFERENCIA', options: { fontSize: 8.5, color: C.dec, charSpacing: 2 } }], 760, 340, 400, 200, { align: 'center' });
+  txt(s, 'BETA · 1°', 1100, 290, 700, 26, { fontSize: 10, color: '9C9588', charSpacing: 2.5, align: 'right' });
+  txt(s, '3.834', 1040, 310, 760, 220, { fontSize: 92, bold: true, color: '9C9588', align: 'right' });
+  txt(s, 'Lo que nos separó: Endeudamiento y Solvencia, 68 puntos detrás de Beta (Plan 5 §0)', 120, 545, 1680, 26, { fontSize: 9, color: C.mute, align: 'center' });
+  hline(s, 120, 630, 1680, C.line, 1);
+  kpi(s, t, 120, 660, 250, 'Margen', '48% → 50%', '', C.omega, 40);
+  kpi(s, t, 370, 660, 250, 'Resultado neto', '+20,3%', '$12,98M', undefined, 40);
+  kpi(s, t, 620, 660, 250, 'Endeudamiento', '0,52 → 0,42', '', undefined, 40);
+  kpi(s, t, 870, 660, 250, 'Caja', '$39,4M', 'sin préstamos', undefined, 40);
+  txt(s, 'Plan 4 vs. real: resultado antes de impuestos ≈ +$3,3M → +$2,96M · margen ≈ 49% → 50% · endeudamiento ≈ 0,42 → 0,42 · unidades +0,4%', 120, 850, 1000, 50, { fontSize: 8, color: C.mute });
+  s.addShape(pptx.ShapeType.line, { x: p(1220), y: p(660), w: 0, h: p(220), line: { color: C.risk, width: 2.5 } });
+  txt(s, [{ text: 'EFECTO NO BUSCADO\n', options: { color: C.risk, fontSize: 8.5, charSpacing: 2 } }, { text: '−14,9%\n', options: { color: C.ink, fontSize: 26, bold: true } }, { text: 'Pequeño Electrodoméstico en Japón (234.824 → 199.736 u.): a 74 quedó más caro que Delta (72). Se corrigió en el P5.', options: { color: C.ink2, fontSize: 9.5 } }], 1246, 660, 560, 240, {});
   thread(s, t, 4);
   notes(s, 'p4-resultado');
 }
 
-// 13 P5 decisión
+// 13 P5 decisión — demanda + balance
 {
   const t: Theme = 'dark';
-  const s = base(t, { num: '05', rest: 'Período 5 · 2030 · La decisión final' }, 'Plan 5 §0–§9 · Informe 5 §2');
+  const s = base(t, { num: '05', rest: 'Período 5 · 2030 · La decisión final' }, 'Plan 5 §0–§9 · Informe 5 §2, §3f');
   title(s, t, 'Faltaba capacidad y sobraba caja:', 'una segunda planta en USA, pagada con fondos propios.');
   txt(s, 'DEMANDA SIN ATENDER VS. UNA PLANTA NUEVA (UNIDADES)', 120, 340, 800, 22, { fontSize: 8.5, color: C.muteD, charSpacing: 2.5 });
   s.addChart(pptx.ChartType.bar, [
     { name: 'Sin atender (cobertura 72% / 70% / 73%)', labels: ['TP', 'PE', 'DH'], values: [36000, 134000, 23000] },
     { name: 'Capacidad de una HighTechnology', labels: ['TP', 'PE', 'DH'], values: [30000, 100000, 20000] },
   ], { x: p(110), y: p(370), w: p(800), h: p(400), barDir: 'col', chartColors: [C.muteD, C.omegaD], showValue: true, dataLabelFormatCode: '#,##0', dataLabelColor: C.white, dataLabelFontSize: 8, ...axisTxt(true), valAxisHidden: true, valGridLine: { style: 'none' } as any, showLegend: true, legendPos: 'b', legendColor: C.muteD, legendFontFace: F, legendFontSize: 8 } as any);
-  rect(s, 120, 810, 760 * 39.4 / 40, 38, C.cyan); txt(s, 'Caja $39,4M', 134, 810, 600, 38, { fontSize: 9, color: C.night, valign: 'middle' });
-  rect(s, 120, 856, 760 * 32.19 / 40, 38, C.dec); txt(s, 'Fábrica $31,46M + implantación est. $0,73M', 134, 856, 700, 38, { fontSize: 9, color: 'FFFFFF', valign: 'middle' });
-  txt(s, 'POR QUÉ CON CAJA Y NO CON PRÉSTAMO', 1000, 340, 800, 22, { fontSize: 8.5, color: C.dec, charSpacing: 2.5 });
-  txt(s, 'Endeudamiento = Pasivo ÷ Patrimonio', 1000, 380, 800, 50, { fontSize: 18, color: C.white });
-  txt(s, 'Con caja baja el disponible, sube el activo fijo y el pasivo no cambia. Con préstamo empeoraba el único parámetro donde Beta nos sacaba ventaja clara (68 puntos).', 1000, 446, 800, 110, { fontSize: 10.5, color: 'C8CCD6' });
-  txt(s, [{ text: 'DESCARTADO\n', options: { color: C.muteD, fontSize: 8.5, charSpacing: 2.5 } }, { text: 'Mercado nuevo (UE Occidental): ', options: { bold: true, color: C.white } }, { text: 'marca cero en el último período y flete cat. 4–5. La demanda propia ya superaba la planta nueva.', options: { color: 'C8CCD6' } }], 1000, 590, 800, 130, { fontSize: 10 });
-  txt(s, [{ text: 'ADEMÁS\n', options: { color: C.muteD, fontSize: 8.5, charSpacing: 2.5 } }, { text: 'Innovación 7 → 8 en las tres líneas · promoción USA $3,0M → $3,7M + delegación comercial · PE Japón 74 → 72 · dividendos 30% → 20%.', options: { color: 'C8CCD6' } }], 1000, 740, 800, 130, { fontSize: 10 });
+  txt(s, [{ text: 'Caja disponible ', options: { color: 'C8CCD6' } }, { text: '$39,4M', options: { color: C.cyan, bold: true } }, { text: ' · inversión ', options: { color: 'C8CCD6' } }, { text: '$31,46M', options: { color: C.dec, bold: true } }, { text: ' + implantación estimada $0,73M. Mercado nuevo descartado: marca cero en el último período.', options: { color: 'C8CCD6' } }], 120, 800, 780, 90, { fontSize: 10.5 });
+  txt(s, 'POR QUÉ CON CAJA · ENDEUDAMIENTO = PASIVO ÷ PATRIMONIO', 1000, 340, 800, 22, { fontSize: 8.5, color: C.dec, charSpacing: 2 });
+  ([['2029', 29.4, 69.5, '0,42', '≈'], ['2030', 30.4, 85.7, '0,35', '']] as [string, number, number, string, string][]).forEach(([y, pas, pat, r, ap], i) => {
+    const y0 = 390 + i * 150; const sb = (v: number) => (v / 110) * 520;
+    txt(s, [{ text: y + '\n', options: { color: C.white, bold: true, fontSize: 13 } }, { text: 'ratio ' + r, options: { color: C.muteD, fontSize: 7.5 } }], 1000, y0, 120, 60, {});
+    rect(s, 1120, y0 + 4, sb(pas), 34, C.risk); txt(s, `pasivo $${dec(pas, 1)}M`, 1130 + sb(pas), y0 + 10, 260, 24, { fontSize: 8, color: C.white });
+    rect(s, 1120, y0 + 46, sb(pat), 34, C.cyan); txt(s, `${ap}patrimonio $${dec(pat, 1)}M`, 1130 + sb(pat), y0 + 52, 260, 24, { fontSize: 8, color: C.white });
+  });
+  txt(s, 'Con caja, el pasivo casi no cambió ($29,4M → $30,4M) y el patrimonio creció: el ratio bajó. Con préstamo hubiéramos empeorado el parámetro donde Beta nos sacaba 68 puntos.', 1000, 700, 800, 120, { fontSize: 10, color: 'C8CCD6' });
   concepts(s, t, ['Inversión', 'Fuentes de financiamiento', 'Estructura de capital', 'Capacidad']);
   thread(s, t, 5);
   notes(s, 'p5-decision');
 }
 
-// 14 P5 resultado
+// 14 P5 resultado — pantalla partida
 {
   const t: Theme = 'light';
   const s = base(t, { num: '05', rest: 'Período 5 · Resultados' }, 'Informe 5 §3b, §3c, §3e, §4a');
-  title(s, t, 'El mejor año de OMEGA,', 'aunque la producción nueva se vendió en Japón y no en USA.');
-  kpi(s, t, 120, 330, 400, 'Ingresos', '$113,7M', '+30,4%', undefined, 60);
-  kpi(s, t, 550, 330, 400, 'Resultado después de impuestos', '+44,7%', '$18,78M · plan ≈ +35%', C.omega, 60);
-  kpi(s, t, 980, 330, 400, 'Unidades', '613.882', '+31,3% · ocupación 98,7%', undefined, 60);
-  kpi(s, t, 1410, 330, 400, 'Endeudamiento', '0,42 → 0,35', 'sin deuda nueva', undefined, 60);
-  txt(s, 'UNIDADES VENDIDAS POR MERCADO · 2029 → 2030', 120, 600, 900, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  s.addChart(pptx.ChartType.bar, [
-    { name: '2029', labels: ['Japón y Corea (+40,8%)', 'USA y Canadá (+11,1%)'], values: [317269, 150431] },
-    { name: '2030', labels: ['Japón y Corea (+40,8%)', 'USA y Canadá (+11,1%)'], values: [446785, 167097] },
-  ], { x: p(110), y: p(630), w: p(940), h: p(300), barDir: 'bar', chartColors: ['CFC9BA', C.dec], showValue: true, dataLabelFormatCode: '#,##0', dataLabelFontSize: 8.5, ...axisTxt(false), valAxisHidden: true, valGridLine: { style: 'none' } as any, catAxisOrientation: 'maxMin', showLegend: true, legendPos: 'b', legendFontFace: F, legendFontSize: 8 } as any);
-  txt(s, 'POR QUÉ IMPORTA', 1160, 600, 640, 22, { fontSize: 8.5, color: C.dec, charSpacing: 2.5 });
-  txt(s, ['Japón vendió ≈30.000 TP, 72.000 PE y 29.000 DH por encima de su capacidad: salieron de USA.', 'Logística +78,4% ($1,22M → $2,17M) y margen 50% → 49%.', 'DomoHogar en USA −38,6% con la marca subiendo de 60 a 87.', 'Demanda propia cubierta: 76% / 80% / 95%.'].map((x) => ({ text: x, options: { breakLine: true, bullet: { indent: 12 } } })), 1160, 636, 640, 300, { fontSize: 10, color: C.ink, paraSpaceAfter: 8 });
+  title(s, t, 'El mejor año de OMEGA,', 'aunque la producción nueva se vendió en Japón y no en USA.', 1560, 46);
+  ([['Ingresos', '$113,7M', '+30,4%'], ['Resultado después de imp.', '$18,78M', '+44,7% · plan ≈ +35%'], ['Unidades', '613.882', '+31,3%'], ['Endeudamiento', '0,35', 'sin deuda nueva']] as string[][]).forEach(([l, v, n], i) => kpi(s, t, 120 + i * 420, 300, 400, l, v, n, undefined, 40));
+  rect(s, 0, 470, 960, 490, C.night); rect(s, 960, 470, 960, 490, C.paper2);
+  txt(s, [{ text: 'JAPÓN Y COREA\n', options: { color: C.cyan, fontSize: 9, charSpacing: 2 } }, { text: '446.785\n', options: { color: C.white, fontSize: 62, bold: true } }, { text: 'unidades · +40,8%\n\n', options: { color: C.cyan, fontSize: 10 } }, { text: 'Ingresos $94,1M (+42,2%) · marca 100 · 49% del mercado. Vendió ≈30.000 TP, 72.000 PE y 29.000 DH por encima de su capacidad: salieron de USA.', options: { color: 'B9BECB', fontSize: 10 } }], 120, 510, 760, 420, {});
+  txt(s, [{ text: 'USA Y CANADÁ\n', options: { color: C.dec, fontSize: 9, charSpacing: 2 } }, { text: '167.097\n', options: { color: C.ink, fontSize: 62, bold: true } }, { text: 'unidades · +11,1%\n\n', options: { color: C.dec, fontSize: 10 } }, { text: 'Ingresos $19,6M (−6,9%) · DomoHogar −38,6% con la marca subiendo de 60 a 87. Logística total +78,4% y margen 50% → 49%.', options: { color: C.ink2, fontSize: 10 } }], 1060, 510, 740, 420, {});
   thread(s, t, 5);
   notes(s, 'p5-resultado');
 }
@@ -466,17 +467,19 @@ const axisTxt = (dk: boolean) => ({ catAxisLabelColor: dk ? C.muteD : C.mute, va
   notes(s, 'valor');
 }
 
-// 16 Ingresos y resultados
+// 16 Ingresos y resultados — columna lateral
 {
-  const t: Theme = 'light';
-  const s = base(t, { acc: 'Acto 3', rest: 'Ingresos, resultados y márgenes' }, 'Diagnóstico §4 · Informes 1–5 §3b, §3e · Plan 5 §0');
-  title(s, t, 'Ingresos ×2,35 y resultado ×5,87:', 'crecimos más en rentabilidad que en tamaño.');
+  const s = rawSlide(C.paper);
+  rect(s, 680, 0, 1240, 1080, C.paper2);
+  eyebrowAt(s, 120, [{ text: 'Acto 3  ', options: { color: C.omega, bold: true } }, { text: '·  INGRESOS Y RESULTADOS', options: { color: C.mute } }]);
+  txt(s, 'Fuente: Diagnóstico §4 · Informes 1–5 §3b, §3e · Plan 5 §0', 1180, 86, 620, 30, { fontSize: 7.5, color: C.mute, align: 'right' });
+  txt(s, [{ text: 'Ingresos ×2,35 y resultado ×5,87: ', options: { color: C.ink } }, { text: 'crecimos más en rentabilidad que en tamaño.', options: { color: C.mute } }], 120, 150, 500, 360, { fontSize: 27 });
+  txt(s, ['P1 · Precio, tecnología y DomoHogar: resultado +38,5% con 12,4% más de ingresos.', 'P2 · La planta de USA: ingresos +43,3% y resultado +99,5%.', 'P4 · Precio: margen 50%, el más alto de la etapa.', 'P5 · Segunda planta: ingresos +30,4% y resultado +44,7%.'].map((x) => ({ text: x, options: { breakLine: true } })), 120, 540, 480, 400, { fontSize: 9.5, color: C.ink, paraSpaceAfter: 12 });
   s.addChart(pptx.ChartType.bar, [
     { name: 'Ingresos ($M)', labels: [...SHORT], values: serie.ingresos.map((v) => +(v / 1e6).toFixed(1)) },
     { name: 'Resultado después de impuestos ($M)', labels: [...SHORT], values: serie.resNeto.map((v) => +(v / 1e6).toFixed(1)) },
-  ], { x: p(110), y: p(340), w: p(1220), h: p(540), barDir: 'col', chartColors: [C.others, C.omega], showValue: true, dataLabelFormatCode: '"$"0.0"M"', dataLabelFontSize: 8, ...axisTxt(false), valAxisLabelFormatCode: '"$"0"M"', showLegend: true, legendPos: 't', legendFontFace: F, legendFontSize: 9, barGapWidthPct: 40 } as any);
-  tableRows(s, t, [['', ...SHORT], ['Margen', ...serie.margen.map((v) => v + '%')], ['Res. op. / ingresos', ...serie.resOperativo.map((r, i) => dec((r / serie.ingresos[i]) * 100, 1) + '%')], ['ROE', ...serie.roe.map((v) => dec(v, 1) + '%')]], 120, 890, [220, ...Array(6).fill(180)], { fontSize: 9, rowH: 30 });
-  txt(s, ['P1 · Precio, tecnología y DomoHogar: resultado +38,5% con 12,4% más de ingresos.', 'P2 · La planta de USA: ingresos +43,3% y resultado +99,5%.', 'P4 · Precio: margen 50%, el más alto de la etapa.', 'P5 · Segunda planta: ingresos +30,4% y resultado +44,7%.'].map((x) => ({ text: x, options: { breakLine: true } })), 1400, 400, 400, 460, { fontSize: 10, color: C.ink, paraSpaceAfter: 14 });
+  ], { x: p(720), y: p(300), w: p(1100), h: p(560), barDir: 'col', chartColors: [C.others, C.omega], showValue: true, dataLabelFormatCode: '"$"0.0"M"', dataLabelFontSize: 8, ...axisTxt(false), valAxisLabelFormatCode: '"$"0"M"', showLegend: true, legendPos: 't', legendFontFace: F, legendFontSize: 9, barGapWidthPct: 40 } as any);
+  tableRows(s, 'paper2', [['', ...SHORT], ['Margen', ...serie.margen.map((v) => v + '%')], ['Res. op. / ingresos', ...serie.resOperativo.map((r, i) => dec((r / serie.ingresos[i]) * 100, 1) + '%')], ['ROE', ...serie.roe.map((v) => dec(v, 1) + '%')]], 730, 880, [200, ...Array(6).fill(145)], { fontSize: 9, rowH: 30 });
   notes(s, 'ingresos');
 }
 
@@ -536,28 +539,25 @@ const axisTxt = (dk: boolean) => ({ catAxisLabelColor: dk ? C.muteD : C.mute, va
   notes(s, 'financiera');
 }
 
-// 20 Ganar vs valer
+// 20 Ganar vs valer — azul pleno
 {
-  const t: Theme = 'light';
-  const s = base(t, { acc: 'Acto 4', rest: 'Balance estratégico' }, 'Informes 1, 2, 3, 5 §3a, §3b · Plan 5 §0');
-  title(s, t, 'Ganar más no es lo mismo', 'que valer más.');
-  txt(s, 'CRECIMIENTO POR PERÍODO · MISMA ESCALA (%) · OBJETIVO DEL MANUAL PARA EL VALOR: 8%', 120, 300, 900, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2 });
+  const s = rawSlide(C.omega);
+  eyebrowAt(s, 120, [{ text: 'Acto 4  ', options: { color: 'FFFFFF', bold: true } }, { text: '·  BALANCE ESTRATÉGICO', options: { color: 'DDE4FF' } }]);
+  txt(s, 'Fuente: Informes 1, 2, 3, 5 §3a, §3b · Plan 5 §0', 1180, 86, 620, 30, { fontSize: 7.5, color: 'DDE4FF', align: 'right' });
+  txt(s, [{ text: 'Ganar más no es lo mismo ', options: { color: 'FFFFFF' } }, { text: 'que valer más.', options: { color: 'AFC2FF' } }], 120, 140, 1650, 200, { fontSize: 44 });
   s.addChart(pptx.ChartType.bar, [
     { name: 'Resultado después de impuestos', labels: ['P1', 'P2', 'P3', 'P4', 'P5'], values: [38.5, 99.5, 22.1, 20.3, 44.7] },
     { name: 'Valor de la compañía', labels: ['P1', 'P2', 'P3', 'P4', 'P5'], values: [10.98, 2.19, 5.87, 1.59, 0.45] },
-  ], { x: p(110), y: p(330), w: p(860), h: p(650), barDir: 'bar', chartColors: [C.others, C.omega], showValue: true, dataLabelFormatCode: '"+"0.0#"%"', dataLabelFontSize: 8.5, ...axisTxt(false), valAxisMinVal: 0, valAxisMaxVal: 110, valAxisLabelFormatCode: '0"%"', catAxisOrientation: 'maxMin', showLegend: true, legendPos: 't', legendFontFace: F, legendFontSize: 9, barGapWidthPct: 50 } as any);
-  const r: [string, string, string][] = [
-    ['01', 'Resultados Económicos (41%) es relativo.', 'En P5 el resultado creció 44,7% y el parámetro bajó 19 puntos: Beta ganó $40,5M antes de impuestos; nosotros $25,4M.'],
+  ], { x: p(110), y: p(360), w: p(860), h: p(600), barDir: 'bar', chartColors: ['9DB2FF', 'FFFFFF'], showValue: true, dataLabelFormatCode: '"+"0.0#"%"', dataLabelFontSize: 8.5, dataLabelColor: 'FFFFFF', catAxisLabelColor: 'FFFFFF', valAxisLabelColor: 'DDE4FF', catAxisLabelFontFace: F, valAxisLabelFontFace: F, catAxisLineColor: 'AFC2FF', valGridLine: { color: '5577FF', size: 0.5 }, valAxisMinVal: 0, valAxisMaxVal: 110, valAxisLabelFormatCode: '0"%"', catAxisOrientation: 'maxMin', showLegend: true, legendPos: 't', legendFontFace: F, legendFontSize: 9, legendColor: 'FFFFFF', barGapWidthPct: 50 } as any);
+  txt(s, 'Misma escala · objetivo del manual para el valor: 8% por período', 120, 975, 860, 24, { fontSize: 8, color: 'DDE4FF' });
+  ([['01', 'Resultados Económicos (41%) es relativo.', 'En P5 el resultado creció 44,7% y el parámetro bajó 19 puntos: Beta ganó $40,5M antes de impuestos; nosotros $25,4M.'],
     ['02', 'Endeudamiento y Solvencia (10%) castigó el préstamo durante cuatro períodos.', 'Desde 2027 tuvimos el ratio más alto del sector. En 2030: 335 puntos contra 394 de Beta, la mayor diferencia.'],
-    ['03', 'Innovación de Producto (13%) premia la mejora del período.', 'Sostener los niveles en P2 costó 61 puntos; subir un grado en P3 sumó 106.'],
-  ];
-  r.forEach(([nn, h, b], i) => {
-    const y = 330 + i * 190;
-    hline(s, 1040, y, 760, C.ink, 1.5);
-    txt(s, [{ text: nn + '  ', options: { color: C.dec, bold: true } }, { text: h, options: { color: C.ink, bold: true } }], 1040, y + 16, 760, 70, { fontSize: 12.5 });
-    txt(s, b, 1040, y + 90, 760, 90, { fontSize: 10, color: C.ink2 });
+    ['03', 'Innovación de Producto (13%) premia la mejora del período.', 'Sostener los niveles en P2 costó 61 puntos; subir un grado en P3 sumó 106.']] as string[][]).forEach(([n, h, b], i) => {
+    const y = 380 + i * 190;
+    hline(s, 1040, y, 760, 'AFC2FF', 1.5);
+    txt(s, [{ text: n + '  ', options: { color: 'AFC2FF', bold: true } }, { text: h, options: { color: 'FFFFFF', bold: true } }], 1040, y + 16, 760, 70, { fontSize: 12.5 });
+    txt(s, b, 1040, y + 90, 760, 90, { fontSize: 10, color: 'E6ECFF' });
   });
-  txt(s, 'El valor se compone de seis parámetros ponderados, medidos contra el resto del sector.', 1040, 910, 760, 40, { fontSize: 9, color: C.mute });
   notes(s, 'ganar-valer');
 }
 
@@ -584,19 +584,24 @@ const axisTxt = (dk: boolean) => ({ catAxisLabelColor: dk ? C.muteD : C.mute, va
   notes(s, 'balance');
 }
 
-// 22 Cierre
+// 22 Cierre — pantalla partida
 {
-  const t: Theme = 'dark';
-  const s = base(t, { acc: 'Cierre', rest: '2025 → 2030' });
-  tableRows(s, t, [
-    ['', 'RECIBIMOS', 'ENTREGAMOS'], ['Valor de la compañía', '3.139', '3.847'], ['Mercados', '1', '2'], ['Fábricas', '2', '4'], ['Unidades', '294.412', '613.882'],
-    ['Ingresos', '$48,3M', '$113,7M'], ['Resultado después de impuestos', '$3,2M', '$18,8M'], ['Valor de marca', '55', '96'], ['Innovación', '5,0', '8,0'], ['Endeudamiento', '0,22', '0,35'],
-  ], 120, 170, [520, 170, 190], { fontSize: 13, hiCol: 2, rowH: 70 });
-  txt(s, 'Fuente: Diagnóstico · Informe 5 §3b, §7', 120, 900, 600, 20, { fontSize: 7.5, color: C.muteD });
-  txt(s, 'Ω', 1120, 150, 300, 160, { fontSize: 75, bold: true, color: C.omegaD });
-  txt(s, 'Administrar OMEGA fue aprender que ninguna decisión es de un área sola.', 1120, 340, 680, 200, { fontSize: 22, color: C.white });
-  txt(s, 'La marca crea demanda, la demanda pide capacidad, la capacidad pide financiamiento, y el financiamiento se paga en valor. Crecimos 2,35 veces en ingresos y casi 6 veces en resultado; la deuda de la expansión fue lo que nos separó del primer puesto.', 1120, 560, 680, 260, { fontSize: 12, color: 'B9BECB' });
-  txt(s, TEAM.join(' · '), 1120, 960, 680, 30, { fontSize: 10, color: C.muteD });
+  const s = rawSlide(C.paper);
+  rect(s, 960, 0, 960, 1080, C.night);
+  eyebrowAt(s, 120, [{ text: 'Cierre  ', options: { color: C.omega, bold: true } }, { text: '·  2025 → 2030', options: { color: C.mute } }]);
+  txt(s, '2025 · LO QUE RECIBIMOS', 120, 170, 780, 24, { fontSize: 9, color: C.mute, charSpacing: 2.5 });
+  txt(s, '2030 · LO QUE ENTREGAMOS', 1060, 170, 740, 24, { fontSize: 9, color: C.cyan, charSpacing: 2.5 });
+  const rows: [string, string, string, boolean?][] = [['Valor de la compañía', '3.139', '3.847'], ['Mercados', '1', '2'], ['Fábricas', '2', '4'], ['Unidades', '294.412', '613.882'], ['Ingresos', '$48,3M', '$113,7M'], ['Resultado después de impuestos', '$3,2M', '$18,8M'], ['Valor de marca', '55', '96'], ['Innovación', '5,0', '8,0'], ['Endeudamiento', '0,22', '0,35', true]];
+  rows.forEach(([k, a, b, r], i) => {
+    const y = 236 + i * 64;
+    txt(s, k, 120, y, 560, 40, { fontSize: 11, color: C.ink2 });
+    txt(s, a, 600, y - 4, 300, 44, { fontSize: 14, color: C.mute, align: 'right' });
+    hline(s, 120, y + 50, 780, C.line, 0.75);
+    txt(s, b, 1060, y - 10, 740, 54, { fontSize: 22, bold: true, color: r ? C.risk : C.white });
+    hline(s, 1060, y + 50, 740, '2A3248', 0.75);
+  });
+  txt(s, [{ text: 'Ω ', options: { color: C.omegaD } }, { text: 'Ninguna decisión es de un área sola.\n', options: { color: C.white } }, { text: 'La deuda de la expansión fue lo que nos separó del primer puesto.', options: { color: C.muteD, fontSize: 9 } }], 1060, 860, 740, 140, { fontSize: 18 });
+  txt(s, [{ text: TEAM.join(' · ') + '\n', options: { color: C.ink2, fontSize: 10 } }, { text: 'Fuente: Diagnóstico · Informe 5 §3b, §7', options: { color: C.mute, fontSize: 7.5 } }], 120, 880, 780, 80, {});
   notes(s, 'cierre');
 }
 

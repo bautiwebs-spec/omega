@@ -19,6 +19,11 @@ body.print { overflow: visible; background: #fff; }
 .slide.paper2 { background: var(--paper2); color: var(--ink); }
 .slide.dark { background: var(--night); color: #F3F0E8; }
 .slide.graphite { background: var(--graphite); color: #F3F0E8; }
+.slide.blue { background: var(--omega); color: #fff; }
+.blue .eyebrow .acc { color: #fff; } .blue .title .sub { color: rgba(255,255,255,.62); } .blue .lbl { color: rgba(255,255,255,.72); }
+.blue .thread .n { background: var(--omega); }
+.panel .eyebrow .acc { color: var(--cyan); } .panel .lbl { color: var(--mute-d); }
+.panel .hair { border-top-color: rgba(243,240,232,.16); }
 .print .slide { position: relative; page-break-after: always; break-after: page; }
 
 /* ---------- type ---------- */

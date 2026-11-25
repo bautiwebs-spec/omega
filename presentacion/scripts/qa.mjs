@@ -44,7 +44,7 @@ ok('enlace directo #/9', (await counter()).trim() === '09 / 22');
 // 2. Cifras animadas terminan en el valor exacto
 await p.goto(url + '#/6'); await p.reload(); await p.waitForTimeout(2600);
 const big = await p.$$eval('.slide .big', (els) => els.map((e) => e.textContent));
-ok('contador de valor termina en 3.483', big.includes('3.483'), big.slice(0, 4).join(' | '));
+ok('contador de valor termina en +10,98%', big.includes('+10,98%'), big.slice(0, 4).join(' | '));
 ok('contador termina en +38,5%', big.some((t) => t.includes('38,5')));
 
 // 3. Escalado a distintas pantallas (el lienzo entra completo, sin scroll)
@@ -65,7 +65,7 @@ ok('reduced-motion: elementos visibles sin animar', op.length > 0 && op.every((o
 const big2 = await p2.$$eval('.slide .big', (els) => els.map((e) => e.textContent));
 await p2.goto(url + '#/6'); await p2.reload(); await p2.waitForTimeout(150);
 const big3 = await p2.$$eval('.slide .big', (els) => els.map((e) => e.textContent));
-ok('reduced-motion: cifras finales sin conteo', big3.includes('3.483'), big3.slice(0, 2).join(' | '));
+ok('reduced-motion: cifras finales sin conteo', big3.includes('+10,98%'), big3.slice(0, 2).join(' | '));
 
 // 5. Sin recursos externos (funciona offline)
 const ctx3 = await b.newContext({ viewport: { width: 1920, height: 1080 }, offline: true });
