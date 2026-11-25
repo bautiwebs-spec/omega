@@ -22,7 +22,9 @@ Presentación para el examen final oral de Simulación Empresarial: la evolució
 | A | ir al anexo / volver a la diapositiva donde estabas |
 | Inicio · Fin | primera / última diapositiva principal |
 
-También se puede hacer clic: borde izquierdo = atrás, resto = adelante. La URL guarda el número de diapositiva (`#/12`).
+**En tablet o celular (iPad, Android, iPhone):** deslizar el dedo hacia la izquierda avanza y hacia la derecha retrocede. Tocar el borde izquierdo de la pantalla retrocede y el resto avanza. Al tocar o mover el mouse aparece una barra con ‹ ›, Índice, Anexo y pantalla completa; se oculta sola a los pocos segundos.
+**Teclado externo en iPad:** tocá la diapositiva una vez para que la página tenga el foco; después las flechas funcionan.
+La URL guarda el número de diapositiva (`#/12`) cuando el navegador lo permite.
 Con "reducir movimiento" activado en el sistema, todo aparece sin animaciones.
 
 ### Sobre el PowerPoint

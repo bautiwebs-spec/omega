@@ -34,7 +34,7 @@ await p.keyboard.press('a');
 ok('A de nuevo vuelve a la diapositiva', (await counter()).trim() === '05 / 22', await counter());
 await p.keyboard.press('g');
 ok('G abre la grilla', await p.isVisible('.grid'));
-const thumbs = await p.$$('.grid button');
+const thumbs = await p.$$('.grid .grid-item');
 ok('grilla con 30 miniaturas', thumbs.length === 30, String(thumbs.length));
 await thumbs[14].click();
 ok('clic en miniatura navega', (await counter()).trim() === '15 / 22' && !(await p.isVisible('.grid')));
