@@ -2,6 +2,7 @@
 // Las coordenadas se escriben en px del lienzo 1920×1080 y se convierten a pulgadas (÷144).
 import PptxGenJS from 'pptxgenjs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import {
   SHORT, TEAM, capacidad, cashflow, competencia2030, costoUnitario, margenProducto, marcaLinea, n, money, dec,
   nivelesInnov, parametros, precios, presupuestos, produccionCargada, referencia, serie, unidadesMercado, valorCompetencia,
@@ -215,11 +216,11 @@ const axisTxt = (dk: boolean) => ({ catAxisLabelColor: dk ? C.muteD : C.mute, va
 // 5 P1 decisión — apertura partida
 function rawSlide(color: string) { const s = pptx.addSlide(); s.background = { color }; return s; }
 function eyebrowAt(s: S, x: number, runs: PptxGenJS.TextProps[]) { txt(s, runs, x, 84, 900, 30, { fontSize: 10, charSpacing: 3 }); }
-function opening(s: S, num: string, label: string, q: string, a: string, bgc: string, numC: string) {
+function opening(s: S, num: string, label: string, q: string, a: string, bgc: string, numC: string, fg: string = C.white) {
   rect(s, 0, 0, 700, 1080, bgc);
-  eyebrowAt(s, 120, [{ text: num + '  ', options: { color: numC === 'FFFFFF' ? 'FFFFFF' : C.dec, bold: true } }, { text: '·  ' + label.toUpperCase(), options: { color: numC === 'FFFFFF' ? 'DDE4FF' : C.muteD } }]);
+  eyebrowAt(s, 120, [{ text: num + '  ', options: { color: numC, bold: true } }, { text: '·  ' + label.toUpperCase(), options: { color: fg } }]);
   txt(s, num, 110, 150, 560, 280, { fontSize: 125, bold: true, color: numC });
-  txt(s, q, 120, 430, 500, 220, { fontSize: 23, color: numC === 'FFFFFF' ? 'FFFFFF' : C.white });
+  txt(s, q, 120, 430, 500, 220, { fontSize: 23, color: fg });
   txt(s, '→ ' + a.toUpperCase(), 120, 660, 520, 30, { fontSize: 9, color: numC, charSpacing: 2 });
 }
 {
@@ -268,33 +269,31 @@ function opening(s: S, num: string, label: string, q: string, a: string, bgc: st
   notes(s, 'p1-resultado');
 }
 
-// 7 P2 selección
+// 7 P2 selección — apertura ámbar
 {
-  const t: Theme = 'light';
-  const s = base(t, { num: '02', rest: 'Período 2 · 2027 · La expansión' }, 'Plan 1 §1.2 · Plan 2 §1.1–§1.3');
-  title(s, t, 'USA y Canadá: el mercado que mejor paga la diferenciación,', 'con la fábrica en destino.');
-  txt(s, 'SELECCIÓN DEL MERCADO', 120, 340, 600, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  tableRows(s, t, [
+  const s = rawSlide(C.paper);
+  opening(s, '02', 'Período 2 · 2027', '¿Dónde crecer y dónde producir?', 'USA y Canadá, con fábrica propia', C.dec, 'FFFFFF', 'FFFFFF');
+  txt(s, 'DÓNDE CONSTRUIR · INVERSIÓN', 120, 720, 520, 22, { fontSize: 7.5, color: 'FFE3D8', charSpacing: 2 });
+  ([['HighTechnology · USA ✓', '$31,46M', 'produce donde vende · flete cat. 1'], ['HighTechnology · Japón', '$32,83M', 'más cara; se llenaría con demanda japonesa'], ['Allin One · México', '$16,54M', 'tecnología 0 · impuesto 16%']] as string[][]).forEach(([n, v, x], i) => {
+    hline(s, 120, 750 + i * 76, 500, 'FFB39A', 0.75);
+    txt(s, [{ text: n + '\n', options: { bold: true, fontSize: 10, color: 'FFFFFF' } }, { text: x, options: { fontSize: 8, color: 'FFE3D8' } }], 120, 758 + i * 76, 380, 60, {});
+    txt(s, v, 480, 758 + i * 76, 140, 26, { fontSize: 10, color: 'FFFFFF', align: 'right' });
+  });
+  txt(s, 'Fuente: Plan 1 §1.2 · Plan 2 §1.1–§1.3', 1180, 86, 620, 30, { fontSize: 7.5, color: C.mute, align: 'right' });
+  txt(s, [{ text: 'El mercado que mejor paga la diferenciación, ', options: { color: C.ink } }, { text: 'con la fábrica en destino.', options: { color: C.mute } }], 800, 150, 1000, 140, { fontSize: 23 });
+  tableRows(s, 'light', [
     ['CRITERIO', 'USA Y CANADÁ', 'UE OCCIDENTAL', 'JAPÓN (ACTUAL)'],
     ['Renta per cápita', '40.400', '28.100', '28.570'],
     ['Innovadores + Conservadores', '55%', '44%', '43%'],
     ['Penetración del sector', '61% – 64%', '65% – 82%', '69% – 85%'],
-    ['Sin atender TP / PE / DH (miles)', '34,7 / 118,4 / 17,7', '26,8 / 127,4 / 7,3', '57,4 / 96,4 / 11,9'],
+    ['Sin atender TP/PE/DH (miles)', '34,7 / 118,4 / 17,7', '26,8 / 127,4 / 7,3', '57,4 / 96,4 / 11,9'],
     ['Flete desde Japón', 'Categoría 3', 'Categoría 5', 'Categoría 1'],
     ['Competidores', '1 (Gama)', '2', '2 (Omega, Delta)'],
     ['Precio de referencia', '200 / 60 / 650', '215 / 60 / 630', '260 / 70 / 720'],
-  ], 120, 376, [330, 230, 210, 230], { fontSize: 10, hiCol: 1, rowH: 54 });
-  txt(s, 'DÓNDE CONSTRUIR · INVERSIÓN ($M)', 1200, 340, 600, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  s.addChart(pptx.ChartType.bar, [{ name: 'Inversión', labels: ['HighTechnology · USA', 'HighTechnology · Japón', 'Allin One · México'], values: [31.455, 32.833, 16.538] }], {
-    x: p(1190), y: p(370), w: p(610), h: p(240), barDir: 'bar', chartColors: [C.dec, 'B9B3A6', 'B9B3A6'], showValue: true, dataLabelFormatCode: '"$"0.00"M"', dataLabelFontSize: 9, dataLabelColor: C.ink,
-    valAxisHidden: true, valAxisMinVal: 0, valAxisMaxVal: 40, ...axisTxt(false), valGridLine: { style: 'none' } as any, catAxisOrientation: 'maxMin', showLegend: false, barGapWidthPct: 50,
-  } as any);
-  txt(s, [
-    { text: 'Elegida: HighTechnology en USA. ', options: { bold: true, color: C.dec, breakLine: true } },
-    { text: 'Produce donde vende (flete cat. 1). Japón: más cara y se llenaría con demanda japonesa. México: tecnología 0, impuesto 16% y capacidad mayor a la demanda libre.', options: { color: C.ink2 } },
-  ], 1200, 630, 600, 200, { fontSize: 10 });
-  concepts(s, t, ['Segmentación', 'Análisis de demanda', 'Costos logísticos', 'Inversión']);
-  thread(s, t, 2);
+  ], 800, 340, [280, 240, 220, 260], { fontSize: 9.5, hiCol: 1, rowH: 54 });
+  txt(s, 'Fábrica y mercado en el mismo período: la planta abastece USA desde el primer día.', 800, 800, 1000, 26, { fontSize: 9, color: C.mute });
+  concepts(s, 'light', ['Segmentación', 'Análisis de demanda', 'Costos logísticos', 'Inversión'], 952, 800);
+  thread(s, 'light', 2, 800);
   notes(s, 'p2-seleccion');
 }
 
@@ -368,27 +367,30 @@ function opening(s: S, num: string, label: string, q: string, a: string, bgc: st
   notes(s, 'p3');
 }
 
-// 11 P4 decisión — burbujas
+// 11 P4 decisión — apertura grafito + burbujas
 {
-  const t: Theme = 'light';
-  const s = base(t, { num: '04', rest: 'Período 4 · 2029 · Rentabilidad y eficiencia' }, 'Plan 4 §1–§9 · sin Informe 4 (error de la simulación)');
-  title(s, t, 'El producto con más margen porcentual', 'no es el que más dinero deja.');
-  const X0 = 200, X1 = 860, Y0 = 870, Y1 = 380;
+  const s = rawSlide(C.paper);
+  opening(s, '04', 'Período 4 · 2029', '¿Qué producto deja más plata?', 'Subir precios y llenar las tres líneas', C.graphite, C.cyan, C.white);
+  ([['Precios Japón', 'TP 238→250 · DH 685→705'], ['Precios USA', '195→205 · 59→61 · 640→660'], ['Tecnología', '$1,0M → $0,4M (nivel 10)'], ['Promoción', 'Japón −$0,7M · USA +$0,6M'], ['Innovación', 'PE y DH de 6 a 7'], ['Producción', 'DomoHogar completo: 63.000'], ['Dividendos', '50% → 30%']] as string[][]).forEach(([k, v], i) => {
+    hline(s, 120, 736 + i * 36, 500, '2A3248', 0.75);
+    txt(s, k, 120, 742 + i * 36, 150, 26, { fontSize: 8, bold: true, color: C.white });
+    txt(s, v, 270, 742 + i * 36, 350, 26, { fontSize: 8, color: 'B9BECB' });
+  });
+  txt(s, 'Fuente: Plan 4 §1–§9 · sin Informe 4 (error de la simulación)', 1180, 86, 620, 30, { fontSize: 7.5, color: C.mute, align: 'right' });
+  txt(s, [{ text: 'El producto con más margen porcentual ', options: { color: C.ink } }, { text: 'no es el que más dinero deja.', options: { color: C.mute } }], 800, 150, 1000, 140, { fontSize: 23 });
+  const X0 = 900, X1 = 1560, Y0 = 860, Y1 = 400;
   const sx = (v: number) => X0 + ((v - 40) / 26) * (X1 - X0); const sy = (v: number) => Y0 - (v / 340) * (Y0 - Y1);
   [0, 100, 200, 300].forEach((v) => { hline(s, X0, sy(v), X1 - X0, v ? 'E2DDD0' : C.ink, v ? 0.5 : 1); txt(s, '$' + v, X0 - 80, sy(v) - 10, 66, 20, { fontSize: 7.5, color: C.mute, align: 'right' }); });
   [40, 45, 50, 55, 60, 65].forEach((v) => txt(s, v + '%', sx(v) - 30, Y0 + 12, 60, 20, { fontSize: 7.5, color: C.mute, align: 'center' }));
   txt(s, 'MARGEN % (2028) →', X1 - 300, Y0 + 40, 300, 20, { fontSize: 7.5, color: C.mute, align: 'right' });
-  txt(s, '↑ MARGEN POR UNIDAD · TAMAÑO = MARGEN BRUTO TOTAL', X0 - 80, Y1 - 40, 760, 20, { fontSize: 7.5, color: C.mute });
+  txt(s, '↑ MARGEN POR UNIDAD · TAMAÑO = MARGEN BRUTO TOTAL', X0 - 60, Y1 - 44, 760, 20, { fontSize: 7.5, color: C.mute });
   ([['TecnoPersonal', 52.9, 120, 11.2], ['Pequeño Electrodoméstico', 61.8, 43, 13.5], ['DomoHogar', 43.8, 295, 17.9]] as [string, number, number, number][]).forEach(([n, pc, u, m]) => {
-    const r = Math.sqrt(m) * 17; const cx = sx(pc), cy = sy(u);
+    const r = Math.sqrt(m) * 16; const cx = sx(pc), cy = sy(u); const left = pc > 60;
     s.addShape(pptx.ShapeType.ellipse, { x: p(cx - r), y: p(cy - r), w: p(2 * r), h: p(2 * r), fill: { color: u > 200 ? C.dec : pc > 60 ? C.ink : 'B9B3A6' }, line: { type: 'none' } as any });
-    const left = pc > 60;
     txt(s, [{ text: n + '\n', options: { bold: true, fontSize: 10.5, color: C.ink } }, { text: `${dec(pc, 1)}% · ≈$${u}/u · bruto ≈$${dec(m, 1)}M`, options: { fontSize: 7.5, color: C.ink2 } }], left ? cx - r - 400 : cx + r + 14, cy - 18, 386, 60, { align: left ? 'right' : 'left' });
   });
-  txt(s, 'DECISIONES DEL PERÍODO', 1080, 330, 720, 22, { fontSize: 8.5, color: C.mute, charSpacing: 2.5 });
-  tableRows(s, t, [['', ''], ['Precios Japón', 'TP 238 → 250 · DH 685 → 705 · PE 74 sin cambio'], ['Precios USA', '195 → 205 · 59 → 61 · 640 → 660'], ['Tecnología', '$1,0M → $0,4M: nivel 10, retorno marginal ≈ 0'], ['Promoción', 'Japón $4,0M → $3,3M · USA $2,4M → $3,0M'], ['Innovación', 'PE y DH de 6 a 7 ($2,2M → $2,55M)'], ['Producción', 'DomoHogar a capacidad completa: 63.000'], ['Dividendos', '50% → 30% para bajar el endeudamiento']], 1080, 352, [170, 550], { fontSize: 9.5, boldCol0: true, rowH: 52, left: true });
-  txt(s, 'Cada planta tiene capacidad separada por producto: no se puede pasar capacidad de PE a DH. Subas de 3% a 5%.', 1080, 790, 720, 60, { fontSize: 8.5, color: C.mute });
-  thread(s, t, 4);
+  txt(s, 'Cada planta tiene capacidad separada por producto: producir menos PE no libera capacidad para DH.', 800, 930, 1000, 26, { fontSize: 8, color: C.mute });
+  thread(s, 'light', 4, 800);
   notes(s, 'p4-decision');
 }
 
@@ -415,27 +417,33 @@ function opening(s: S, num: string, label: string, q: string, a: string, bgc: st
   notes(s, 'p4-resultado');
 }
 
-// 13 P5 decisión — demanda + balance
+// 13 P5 decisión — apertura invertida (papel sobre oscuro)
 {
-  const t: Theme = 'dark';
-  const s = base(t, { num: '05', rest: 'Período 5 · 2030 · La decisión final' }, 'Plan 5 §0–§9 · Informe 5 §2, §3f');
-  title(s, t, 'Faltaba capacidad y sobraba caja:', 'una segunda planta en USA, pagada con fondos propios.');
-  txt(s, 'DEMANDA SIN ATENDER VS. UNA PLANTA NUEVA (UNIDADES)', 120, 340, 800, 22, { fontSize: 8.5, color: C.muteD, charSpacing: 2.5 });
+  const s = rawSlide(C.night);
+  opening(s, '05', 'Período 5 · 2030', '¿Invertir en el último período? ¿Con qué fondos?', 'Segunda planta en USA, con caja propia', C.paper, C.omega, C.ink);
+  hline(s, 120, 730, 500, C.line, 0.75);
+  txt(s, 'Caja disponible $39,4M · inversión $31,46M + implantación estimada $0,73M.', 120, 742, 500, 60, { fontSize: 9.5, color: C.ink2 });
+  hline(s, 120, 820, 500, C.line, 0.75);
+  txt(s, [{ text: 'Descartado: ', options: { bold: true, color: C.ink } }, { text: 'mercado nuevo (marca cero en el último período, flete cat. 4–5) y préstamo.', options: { color: C.ink2 } }], 120, 832, 500, 80, { fontSize: 9.5 });
+  txt(s, 'Fuente: Plan 5 §0–§9 · Informe 5 §2, §3f', 1180, 86, 620, 30, { fontSize: 7.5, color: C.muteD, align: 'right' });
+  txt(s, [{ text: 'Faltaba capacidad y sobraba caja: ', options: { color: C.white } }, { text: 'invertir sin endeudarse.', options: { color: C.muteD } }], 800, 150, 1000, 140, { fontSize: 23 });
+  txt(s, 'SIN ATENDER VS. UNA PLANTA NUEVA', 800, 330, 480, 22, { fontSize: 8, color: C.muteD, charSpacing: 2 });
   s.addChart(pptx.ChartType.bar, [
-    { name: 'Sin atender (cobertura 72% / 70% / 73%)', labels: ['TP', 'PE', 'DH'], values: [36000, 134000, 23000] },
-    { name: 'Capacidad de una HighTechnology', labels: ['TP', 'PE', 'DH'], values: [30000, 100000, 20000] },
-  ], { x: p(110), y: p(370), w: p(800), h: p(400), barDir: 'col', chartColors: [C.muteD, C.omegaD], showValue: true, dataLabelFormatCode: '#,##0', dataLabelColor: C.white, dataLabelFontSize: 8, ...axisTxt(true), valAxisHidden: true, valGridLine: { style: 'none' } as any, showLegend: true, legendPos: 'b', legendColor: C.muteD, legendFontFace: F, legendFontSize: 8 } as any);
-  txt(s, [{ text: 'Caja disponible ', options: { color: 'C8CCD6' } }, { text: '$39,4M', options: { color: C.cyan, bold: true } }, { text: ' · inversión ', options: { color: 'C8CCD6' } }, { text: '$31,46M', options: { color: C.dec, bold: true } }, { text: ' + implantación estimada $0,73M. Mercado nuevo descartado: marca cero en el último período.', options: { color: 'C8CCD6' } }], 120, 800, 780, 90, { fontSize: 10.5 });
-  txt(s, 'POR QUÉ CON CAJA · ENDEUDAMIENTO = PASIVO ÷ PATRIMONIO', 1000, 340, 800, 22, { fontSize: 8.5, color: C.dec, charSpacing: 2 });
+    { name: 'Sin atender (72% / 70% / 73% cubierto)', labels: ['TP', 'PE', 'DH'], values: [36000, 134000, 23000] },
+    { name: 'Una HighTechnology', labels: ['TP', 'PE', 'DH'], values: [30000, 100000, 20000] },
+  ], { x: p(790), y: p(360), w: p(490), h: p(380), barDir: 'col', chartColors: [C.muteD, C.omegaD], showValue: true, dataLabelFormatCode: '#,##0', dataLabelColor: C.white, dataLabelFontSize: 7.5, ...axisTxt(true), valAxisHidden: true, valGridLine: { style: 'none' } as any, showLegend: true, legendPos: 'b', legendColor: C.muteD, legendFontFace: F, legendFontSize: 7 } as any);
+  txt(s, 'PASIVO ÷ PATRIMONIO', 1330, 330, 470, 22, { fontSize: 8, color: C.dec, charSpacing: 2 });
   ([['2029', 29.4, 69.5, '0,42', '≈'], ['2030', 30.4, 85.7, '0,35', '']] as [string, number, number, string, string][]).forEach(([y, pas, pat, r, ap], i) => {
-    const y0 = 390 + i * 150; const sb = (v: number) => (v / 110) * 520;
-    txt(s, [{ text: y + '\n', options: { color: C.white, bold: true, fontSize: 13 } }, { text: 'ratio ' + r, options: { color: C.muteD, fontSize: 7.5 } }], 1000, y0, 120, 60, {});
-    rect(s, 1120, y0 + 4, sb(pas), 34, C.risk); txt(s, `pasivo $${dec(pas, 1)}M`, 1130 + sb(pas), y0 + 10, 260, 24, { fontSize: 8, color: C.white });
-    rect(s, 1120, y0 + 46, sb(pat), 34, C.cyan); txt(s, `${ap}patrimonio $${dec(pat, 1)}M`, 1130 + sb(pat), y0 + 52, 260, 24, { fontSize: 8, color: C.white });
+    const y0 = 380 + i * 150; const sb = (v: number) => (v / 100) * 300;
+    txt(s, [{ text: y + '\n', options: { color: C.white, bold: true, fontSize: 12 } }, { text: 'ratio ' + r, options: { color: C.muteD, fontSize: 7.5 } }], 1330, y0, 90, 60, {});
+    rect(s, 1420, y0 + 4, sb(pas), 30, C.risk); txt(s, `pasivo $${dec(pas, 1)}M`, 1428 + sb(pas), y0 + 9, 200, 22, { fontSize: 7.5, color: C.white });
+    rect(s, 1420, y0 + 42, sb(pat), 30, C.cyan); txt(s, `${ap}patrimonio $${dec(pat, 1)}M`, 1420, y0 + 78, 300, 22, { fontSize: 7.5, color: C.muteD });
   });
-  txt(s, 'Con caja, el pasivo casi no cambió ($29,4M → $30,4M) y el patrimonio creció: el ratio bajó. Con préstamo hubiéramos empeorado el parámetro donde Beta nos sacaba 68 puntos.', 1000, 700, 800, 120, { fontSize: 10, color: 'C8CCD6' });
-  concepts(s, t, ['Inversión', 'Fuentes de financiamiento', 'Estructura de capital', 'Capacidad']);
-  thread(s, t, 5);
+  txt(s, 'Con caja el pasivo casi no cambió y el patrimonio creció: el ratio bajó.', 1330, 690, 470, 60, { fontSize: 9, color: 'C8CCD6' });
+  hline(s, 800, 790, 1000, '2A3248', 0.75);
+  txt(s, 'Con préstamo hubiéramos empeorado el único parámetro donde Beta nos sacaba ventaja clara (68 puntos). Además: innovación 7 → 8 en las tres líneas y delegación comercial en USA.', 800, 806, 1000, 80, { fontSize: 9.5, color: 'C8CCD6' });
+  concepts(s, 'dark', ['Inversión', 'Financiamiento propio', 'Estructura de capital'], 952, 800);
+  thread(s, 'dark', 5, 800);
   notes(s, 'p5-decision');
 }
 
@@ -663,4 +671,5 @@ function annex(code: string, ttl: string, src: string, note = '') {
 
 const out = path.resolve(process.argv[2] ?? '../entregables/OMEGA_Cinco_decisiones.pptx');
 await pptx.writeFile({ fileName: out });
+execFileSync('python3', ['-I', path.resolve('scripts/add_transitions.py'), out, '5,7,10,11,13,15,20']);
 console.log('PPTX:', out);

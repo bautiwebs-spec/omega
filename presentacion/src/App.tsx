@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { SLIDES, MAIN_COUNT } from './slides';
+import { SLIDES, MAIN_COUNT, type Curtain } from './slides';
 import { SlideCtx } from './components/ui';
 
 // Todo acceso a APIs del navegador va protegido: la presentación puede abrirse dentro de
@@ -29,11 +29,13 @@ function toggleFullscreen() {
   }, null);
 }
 
-function SlideView({ i, active, still }: { i: number; active: boolean; still: boolean }) {
+const reducedMotion = () => safe(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches, false);
+
+function SlideView({ i, active, still, base = 0 }: { i: number; active: boolean; still: boolean; base?: number }) {
   const s = SLIDES[i];
   return (
-    <SlideCtx.Provider value={{ active, still }}>
-      <section
+    <SlideCtx.Provider value={{ active, still, base }}>
+      <section style={base ? ({ ['--base' as string]: `${base}ms` }) : undefined}
         className={`slide ${s.theme} ${active ? 'active' : ''} ${still ? 'static' : 'slide-in'} ${s.chapter ? 'chapter' : ''}`}
         aria-roledescription="diapositiva" aria-label={`${i + 1}. ${s.name}`}
       >
@@ -66,9 +68,16 @@ function Deck() {
   const hideTimer = useRef<number>();
   const touch = useRef<{ x: number; y: number; t: number } | null>(null);
   const swiped = useRef(false);
+  const cur = useRef(idx);
+  const [curtain, setCurtain] = useState<{ key: number; c: Curtain } | null>(null);
 
   const go = useCallback((n: number) => {
     const k = Math.min(Math.max(n, 0), SLIDES.length - 1);
+    if (k === cur.current) return;
+    // Al entrar a un capítulo nuevo (avanzando), una cortina de su color marca el cambio.
+    const c = SLIDES[k].curtain;
+    setCurtain(c && k > cur.current && !STILL && !reducedMotion() ? { key: Date.now(), c } : null);
+    cur.current = k;
     setIdx(k);
     writeHash(k);
   }, []);
@@ -90,7 +99,7 @@ function Deck() {
 
   useEffect(() => {
     poke();
-    const h = () => setIdx(fromHash());
+    const h = () => { const k = fromHash(); cur.current = k; setIdx(k); };
     window.addEventListener('hashchange', h);
     return () => { window.removeEventListener('hashchange', h); window.clearTimeout(hideTimer.current); };
   }, [poke]);
@@ -154,9 +163,17 @@ function Deck() {
     <div ref={rootRef} tabIndex={-1} className="deck" onMouseMove={poke} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       <div className="stage" onClick={onStageClick}>
         <div className="canvas" style={{ transform: `translate(-50%, -50%) scale(${scale})` }}>
-          <SlideView key={idx} i={idx} active still={STILL} />
+          <SlideView key={idx} i={idx} active still={STILL} base={curtain ? 700 : 0} />
         </div>
       </div>
+      {curtain && (
+        <div key={curtain.key} className="curtain" style={{ background: curtain.c.bg, color: curtain.c.fg }} onAnimationEnd={(e) => { if (e.target === e.currentTarget) setCurtain(null); }} aria-hidden>
+          <div className="curtain-in">
+            <div className="curtain-num" style={{ color: curtain.c.accent }}>{curtain.c.num}</div>
+            <div className="curtain-title">{curtain.c.title}</div>
+          </div>
+        </div>
+      )}
       <div className="progress" style={{ width: `${progress}%`, background: s.annex ? '#8C93A6' : undefined }} />
       <nav className={'controls' + (chrome ? ' on' : '')} aria-label="Navegación">
         <button type="button" onClick={stop(() => go(idx - 1))} disabled={idx === 0} aria-label="Diapositiva anterior">‹</button>

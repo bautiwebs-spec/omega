@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { SHORT } from '../data';
 
-export const SlideCtx = createContext<{ active: boolean; still: boolean }>({ active: true, still: true });
+export const SlideCtx = createContext<{ active: boolean; still: boolean; base?: number }>({ active: true, still: true });
 
 const reduced = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 /** Número que cuenta hasta su valor una sola vez, cuando la diapositiva se activa. */
 export function Num({ v, fmt, delay = 300 }: { v: number; fmt: (x: number) => string; delay?: number }) {
-  const { active, still } = useContext(SlideCtx);
+  const { active, still, base = 0 } = useContext(SlideCtx);
   const instant = still || reduced();
   const [x, setX] = useState(instant ? v : 0);
   useEffect(() => {
@@ -17,14 +17,14 @@ export function Num({ v, fmt, delay = 300 }: { v: number; fmt: (x: number) => st
     const dur = 1100;
     const tick = (t: number) => {
       if (!t0) t0 = t;
-      const k = Math.min(1, Math.max(0, (t - t0 - delay) / dur));
+      const k = Math.min(1, Math.max(0, (t - t0 - delay - base) / dur));
       const e = 1 - Math.pow(1 - k, 3);
       setX(v * e);
       if (k < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [active, instant, v, delay]);
+  }, [active, instant, v, delay, base]);
   return <span style={{ fontVariantNumeric: 'tabular-nums' }}>{fmt(x)}</span>;
 }
 

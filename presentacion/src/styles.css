@@ -84,7 +84,7 @@ table.t td.neg { color: var(--risk); }
 
 /* ---------- motion ---------- */
 .rv { opacity: 0; transform: translateY(18px); }
-.active .rv { animation: rv .7s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--d, 0) * 90ms + 120ms); }
+.active .rv { animation: rv .7s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--d, 0) * 90ms + 120ms + var(--base, 0ms)); }
 @keyframes rv { to { opacity: 1; transform: none; } }
 .slide-in { animation: slidein .55s cubic-bezier(.2,.7,.2,1) both; }
 .slide-in.chapter { animation: chapterin .8s cubic-bezier(.2,.7,.2,1) both; }
@@ -92,12 +92,12 @@ table.t td.neg { color: var(--risk); }
 @keyframes chapterin { from { opacity: 0; transform: scale(1.012); } to { opacity: 1; transform: none; } }
 /* Líneas: aparición por opacidad (funciona igual en Safari, Chrome y Firefox) */
 .draw { opacity: 0; }
-.active .draw { animation: drawfade 1s cubic-bezier(.4,0,.2,1) forwards; animation-delay: calc(var(--d, 0) * 90ms + 200ms); }
+.active .draw { animation: drawfade 1s cubic-bezier(.4,0,.2,1) forwards; animation-delay: calc(var(--d, 0) * 90ms + 200ms + var(--base, 0ms)); }
 @keyframes drawfade { to { opacity: 1; } }
 .grow { transform: scaleY(0); transform-box: fill-box; transform-origin: bottom; }
 .growx { transform: scaleX(0); transform-box: fill-box; transform-origin: left; }
-.active .grow { animation: grow .8s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--d, 0) * 70ms + 200ms); }
-.active .growx { animation: growx .8s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--d, 0) * 70ms + 200ms); }
+.active .grow { animation: grow .8s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--d, 0) * 70ms + 200ms + var(--base, 0ms)); }
+.active .growx { animation: growx .8s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--d, 0) * 70ms + 200ms + var(--base, 0ms)); }
 @keyframes grow { to { transform: scaleY(1); } }
 @keyframes growx { to { transform: scaleX(1); } }
 
@@ -134,3 +134,13 @@ table.t td.neg { color: var(--risk); }
 .grid .cap { font: 500 12px var(--mono); color: #9aa; margin-top: 8px; letter-spacing: .06em; }
 .grid .sect { grid-column: 1 / -1; font: 500 13px var(--mono); color: #78809a; letter-spacing: .14em; text-transform: uppercase; margin-top: 12px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* ---------- cortina de cambio de capítulo ---------- */
+.curtain { position: fixed; inset: 0; z-index: 8; pointer-events: none; display: flex; align-items: center; padding-left: 8vw;
+  animation: curtain 1.25s cubic-bezier(.7,0,.2,1) forwards; }
+.curtain-in { animation: curtainText 1.25s cubic-bezier(.2,.7,.2,1) forwards; }
+.curtain-num { font: 600 clamp(80px, 18vw, 300px)/.85 var(--sans); letter-spacing: -.06em; }
+.curtain-title { font: 500 clamp(24px, 4.2vw, 72px)/1.05 var(--sans); letter-spacing: -.03em; margin-top: 2vh; }
+@keyframes curtain { 0% { transform: translateY(100%); } 28% { transform: translateY(0); } 66% { transform: translateY(0); } 100% { transform: translateY(-100%); } }
+@keyframes curtainText { 0% { opacity: 0; transform: translateY(40px); } 30% { opacity: 0; transform: translateY(40px); } 45% { opacity: 1; transform: none; } 100% { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .curtain { display: none; } }

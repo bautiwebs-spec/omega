@@ -13,60 +13,6 @@ function Row({ cells, head, hi, w }: { cells: ReactNode[]; head?: boolean; hi?: 
   );
 }
 
-/* 7 · P2 por qué USA y dónde */
-export function P2Seleccion() {
-  const rows: [string, string, string, string][] = [
-    ['Renta per cápita', '40.400', '28.100', '28.570'],
-    ['Innovadores + Conservadores', '55%', '44%', '43%'],
-    ['Penetración del sector', '61% – 64%', '65% – 82%', '69% – 85%'],
-    ['Sin atender TP / PE / DH (miles)', '34,7 / 118,4 / 17,7', '26,8 / 127,4 / 7,3', '57,4 / 96,4 / 11,9'],
-    ['Flete desde Japón', 'Categoría 3', 'Categoría 5', 'Categoría 1'],
-    ['Competidores', '1 (Gama)', '2', '2 (Omega, Delta)'],
-    ['Precio de referencia', '200 / 60 / 650', '215 / 60 / 630', '260 / 70 / 720'],
-  ];
-  const fab = [
-    { n: 'HighTechnology · USA', v: 31.455, x: 'Produce donde vende: flete categoría 1. El tipo de planta que ya operamos.', ok: true },
-    { n: 'HighTechnology · Japón', v: 32.833, x: 'Más cara y se llenaría con demanda japonesa; a USA, flete categoría 3.' },
-    { n: 'Allin One · México', v: 16.538, x: 'Mitad de precio, pero tecnología 0, impuesto 16% y capacidad mayor a la demanda libre.' },
-  ];
-  const s = lin(0, 35, 0, 400);
-  return (
-    <>
-      <Eyebrow num="02" rest="Período 2 · 2027 · La expansión" />
-      <Source>Plan 1 §1.2 · Plan 2 §1.1–§1.3 (informes de mercado comprados en P1)</Source>
-      <Title w={1560}>USA y Canadá: el mercado que mejor paga la diferenciación, <span className="sub">con la fábrica en destino.</span></Title>
-      <Box x={120} y={340} w={1000} className="rv" d={1}>
-        <div className="lbl" style={{ textTransform: 'uppercase', letterSpacing: '.12em' }}>Selección del mercado</div>
-        <div style={{ position: 'relative', marginTop: 16 }}>
-          <div className="abs" style={{ left: 290, top: -8, width: 246, bottom: 0, background: 'rgba(47,91,255,.09)', borderTop: '3px solid var(--omega)' }} />
-          <div style={{ position: 'relative' }}>
-            <Row head w="280px 230px 220px 1fr" cells={['Criterio', 'USA y Canadá', 'UE Occidental', 'Japón (actual)']} />
-            {rows.map((r) => <Row key={r[0]} w="280px 230px 220px 1fr" cells={[r[0], <b key="u">{r[1]}</b>, r[2], r[3]].map((c, i) => i ? <span key={i} className="mono" style={{ fontSize: 17 }}>{c}</span> : c)} />)}
-          </div>
-        </div>
-      </Box>
-      <Box x={1200} y={340} w={600} className="rv" d={3}>
-        <div className="lbl" style={{ textTransform: 'uppercase', letterSpacing: '.12em' }}>Dónde construir · inversión</div>
-        {fab.map((f, i) => (
-          <div key={f.n} style={{ marginTop: 22 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <div style={{ fontSize: 22, fontWeight: 600 }}>{f.n}</div>
-              {f.ok && <span className="chip dec">Elegida</span>}
-            </div>
-            <svg width="600" height="34" style={{ marginTop: 8 }}>
-              <rect className="growx" style={d(4 + i)} x="0" y="6" width={s(f.v)} height="22" fill={f.ok ? '#F2602F' : '#B9B3A6'} />
-              <text x={s(f.v) + 12} y="23" fontFamily={M} fontSize="17" fill="#0E1424">${dec(f.v, 2)}M</text>
-            </svg>
-            <div style={{ fontSize: 18, lineHeight: 1.34, color: '#3D3C38' }}>{f.x}</div>
-          </div>
-        ))}
-      </Box>
-      <Concepts items={['Segmentación', 'Análisis de demanda', 'Costos logísticos', 'Inversión']} />
-      <Thread now={2} />
-    </>
-  );
-}
-
 /* 8 · P2 mapa de la expansión */
 export function P2Mapa() {
   return (
