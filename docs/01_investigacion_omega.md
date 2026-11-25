@@ -238,3 +238,5 @@ Plan 5 §9 había proyectado saldo final planilla 2030 entre −2M y +1M → rea
 9. **Parámetros vs. valor total**: la suma simple de los seis parámetros no coincide exactamente con el valor (p. ej. 2030: 3.822 vs 3.847). No se afirma que sea una suma; se muestran como componentes informados.
 10. **Promoción heredada 2025**: Plan 1 indica 3.715.000 de promoción; el Diagnóstico informa 4.005.000 de gasto de marketing (incluye otros conceptos). Se usa 3.715.000 para promoción.
 11. **Precio USA PE de competidores en 2029**: Plan 4 muestra 59/70; Plan 5 muestra 56/70. Se citan con su documento de origen.
+12. **Tasa de impuesto**: el Diagnóstico y el Plan 2 dicen que Japón tributa 10%, pero los estados de resultados muestran una carga efectiva de ≈26% (después = antes × 0,74 en los seis años). Se usan las cifras de los estados de resultados.
+13. **Período 4**: confirmado por el equipo que no hubo Informe 4 por un error de la simulación. Las decisiones del Plan 4 sí se aplicaron (planilla D4: dividendos 2029 = 30% de 2028; Plan 5 parte de los precios y presupuestos del Plan 4) y los resultados 2029 son distintos de 2028.
