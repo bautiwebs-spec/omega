@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>OMEGA · Style frame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#0A0F1E; --graphite:#141B2D; --paper:#F3F0E8; --paper2:#E9E5DA;
+  --ink:#0E1424; --mute:#7A776F; --mute-d:#8C93A6;
+  --omega:#2F5BFF; --omega-d:#5B82FF; --cyan:#35D0E8;
+  --decision:#FF6B3D; --beta:#9C9588; --others:#CBC6BB; --risk:#E0484D;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#2a2a2a;font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{width:1920px;height:1080px;position:relative;overflow:hidden;margin:0 auto 40px}
+.mono{font-family:"Geist Mono",monospace;letter-spacing:.02em}
+.dark{background:var(--night);color:#F3F0E8}
+.light{background:var(--paper)}
+.eyebrow{font-family:"Geist Mono",monospace;font-size:22px;letter-spacing:.14em;text-transform:uppercase}
+/* timeline thread */
+.thread{position:absolute;left:120px;right:120px;bottom:64px;height:28px}
+.thread .rail{position:absolute;left:0;right:0;top:13px;height:2px;background:currentColor;opacity:.18}
+.thread .fill{position:absolute;left:0;top:13px;height:2px;background:var(--omega)}
+.thread .n{position:absolute;top:6px;width:16px;height:16px;border-radius:50%;border:2px solid currentColor;opacity:.35;transform:translateX(-50%);background:inherit}
+.thread .n.on{opacity:1;border-color:var(--omega);background:var(--omega)}
+.thread .n.now{opacity:1;border-color:var(--decision);background:var(--decision);box-shadow:0 0 0 8px rgba(255,107,61,.18)}
+.thread .lbl{position:absolute;top:34px;transform:translateX(-50%);font:500 16px "Geist Mono";opacity:.5;letter-spacing:.08em}
+/* board */
+.board{width:1920px;margin:0 auto 40px;background:var(--paper);padding:110px 120px;min-height:1080px}
+.sw{display:flex;gap:28px;margin-top:40px}
+.sw div{flex:1;height:220px;border-radius:4px;padding:20px;display:flex;flex-direction:column;justify-content:flex-end;font:500 18px "Geist Mono"}
+</style>
+</head>
+<body>
+
+<!-- ============ 1. PORTADA ============ -->
+<section class="slide dark" id="s1">
+  <svg width="1920" height="1080" style="position:absolute;inset:0">
+    <!-- the value line as a horizon, rising quietly -->
+    <polyline fill="none" stroke="#5B82FF" stroke-width="3" points="1040,760 1186,640 1332,618 1478,558 1624,541 1770,536"/>
+    <g fill="#5B82FF"><circle cx="1040" cy="760" r="7"/><circle cx="1186" cy="640" r="7"/><circle cx="1332" cy="618" r="7"/><circle cx="1478" cy="558" r="7"/><circle cx="1624" cy="541" r="7"/></g>
+    <circle cx="1770" cy="536" r="11" fill="#FF6B3D"/>
+    <text x="1040" y="806" fill="#8C93A6" font-family="Geist Mono" font-size="20" text-anchor="middle">3.139</text>
+    <text x="1770" y="500" fill="#F3F0E8" font-family="Geist Mono" font-size="20" text-anchor="middle">3.847</text>
+    <line x1="1040" y1="860" x2="1770" y2="860" stroke="#F3F0E8" stroke-opacity=".12"/>
+    <g font-family="Geist Mono" font-size="16" fill="#8C93A6" text-anchor="middle">
+      <text x="1040" y="890">2025</text><text x="1186" y="890">P1</text><text x="1332" y="890">P2</text><text x="1478" y="890">P3</text><text x="1624" y="890">P4</text><text x="1770" y="890">P5</text>
+    </g>
+  </svg>
+  <div style="position:absolute;left:120px;top:110px" class="eyebrow"><span style="color:#35D0E8">Simulación Empresarial</span><span style="opacity:.5"> · Examen final · Compañía OMEGA</span></div>
+  <div style="position:absolute;left:112px;top:250px;font-weight:600;font-size:300px;line-height:.8;letter-spacing:-.06em">Ω</div>
+  <h1 style="position:absolute;left:120px;top:520px;font-weight:500;font-size:104px;line-height:1;letter-spacing:-.035em;width:900px">Cinco decisiones.<br><span style="color:#8C93A6">Una estrategia.</span></h1>
+  <div style="position:absolute;left:120px;bottom:110px;font-size:24px;line-height:1.5;color:#C8CCD6">Violeta Behar · Joaquín Malti · Jeronimo Paterson · Bautista Sequeira</div>
+  <div style="position:absolute;right:120px;top:110px" class="eyebrow"><span style="opacity:.5">2025 — 2030</span></div>
+</section>
+
+<!-- ============ 2. PERÍODO 2 · LA EXPANSIÓN ============ -->
+<section class="slide light" id="s2">
+  <div style="position:absolute;left:120px;top:100px" class="eyebrow"><span style="color:var(--decision)">02</span> <span style="opacity:.55">· Período 2 · 2027 · La expansión</span></div>
+  <h2 style="position:absolute;left:120px;top:160px;font-weight:500;font-size:68px;line-height:1.04;letter-spacing:-.03em;width:1100px">Fábrica y mercado en el <span style="color:var(--omega)">mismo período</span>: la planta de USA produjo desde el primer día.</h2>
+
+  <svg width="1920" height="1080" style="position:absolute;inset:0">
+    <!-- Pacific arc: Japón (izq) → USA (der) -->
+    <path d="M 330 700 C 700 470, 1100 470, 1440 700" fill="none" stroke="#0E1424" stroke-opacity=".18" stroke-width="2" stroke-dasharray="4 8"/>
+    <path d="M 1440 700 C 1100 560, 700 560, 330 700" fill="none" stroke="#2F5BFF" stroke-width="3"/>
+    <polygon points="352,693 372,684 368,704" fill="#2F5BFF"/>
+    <text x="885" y="585" text-anchor="middle" font-family="Geist Mono" font-size="19" fill="#2F5BFF">USA → Japón · ≈10.000 TP + 41.000 PE</text>
+    <text x="885" y="515" text-anchor="middle" font-family="Geist Mono" font-size="17" fill="#7A776F">flete Japón→USA cat. 3 · producir en destino: cat. 1</text>
+
+    <!-- Japón -->
+    <g transform="translate(330 700)">
+      <rect x="-70" y="-26" width="52" height="52" fill="#0E1424"/><rect x="-10" y="-26" width="52" height="52" fill="#0E1424"/>
+      <text x="-70" y="78" font-family="Geist" font-weight="600" font-size="30" fill="#0E1424">Japón y Corea</text>
+      <text x="-70" y="112" font-family="Geist Mono" font-size="18" fill="#7A776F">2 plantas HighTechnology</text>
+      <text x="-70" y="200" font-family="Geist" font-weight="600" font-size="64" fill="#0E1424" letter-spacing="-2">364.432</text>
+      <text x="-70" y="234" font-family="Geist Mono" font-size="18" fill="#7A776F">unidades · +20,3% · 48,9% del mercado</text>
+    </g>
+    <!-- USA -->
+    <g transform="translate(1440 700)">
+      <rect x="-26" y="-26" width="52" height="52" fill="#FF6B3D"/>
+      <text x="-26" y="78" font-family="Geist" font-weight="600" font-size="30" fill="#0E1424">USA y Canadá</text>
+      <text x="-26" y="112" font-family="Geist Mono" font-size="18" fill="#7A776F">planta nueva · $31.455.000</text>
+      <text x="-26" y="200" font-family="Geist" font-weight="600" font-size="64" fill="#FF6B3D" letter-spacing="-2">85.769</text>
+      <text x="-26" y="234" font-family="Geist Mono" font-size="18" fill="#7A776F">unidades en su primer año</text><text x="-26" y="262" font-family="Geist Mono" font-size="18" fill="#7A776F">18,5% de los ingresos de Omega</text>
+    </g>
+  </svg>
+
+  <!-- right rail KPIs -->
+  <div style="position:absolute;right:120px;top:120px;width:420px;border-left:2px solid #0E1424;padding-left:32px">
+    <div class="mono" style="font-size:18px;color:var(--mute)">Resultado después de impuestos</div>
+    <div style="font-size:84px;font-weight:600;letter-spacing:-.04em;line-height:1.05">+99,5%</div>
+    <div class="mono" style="font-size:18px;color:var(--mute);margin-top:18px">Endeudamiento</div>
+    <div style="font-size:56px;font-weight:500;letter-spacing:-.03em">0,22 <span style="color:var(--risk)">→ 0,61</span></div>
+  </div>
+  <div class="thread" style="color:#0E1424">
+    <div class="rail"></div><div class="fill" style="width:40%"></div>
+    <div class="n on" style="left:0%"></div><div class="n on" style="left:20%"></div><div class="n now" style="left:40%"></div><div class="n" style="left:60%"></div><div class="n" style="left:80%"></div><div class="n" style="left:100%"></div>
+    <div class="lbl" style="left:0%">2025</div><div class="lbl" style="left:20%">P1</div><div class="lbl" style="left:40%;opacity:1;color:#FF6B3D">P2</div><div class="lbl" style="left:60%">P3</div><div class="lbl" style="left:80%">P4</div><div class="lbl" style="left:100%">P5</div>
+  </div>
+</section>
+
+<!-- ============ 3. EVOLUCIÓN DEL VALOR ============ -->
+<section class="slide dark" id="s3" style="background:var(--graphite)">
+  <div style="position:absolute;left:120px;top:100px" class="eyebrow"><span style="color:#35D0E8">Acto 3</span> <span style="opacity:.55">· La evolución global · Valor de la compañía</span></div>
+  <h2 style="position:absolute;left:120px;top:160px;font-weight:500;font-size:64px;line-height:1.05;letter-spacing:-.03em;width:1300px">De 3.139 a 3.847 puntos: <span style="color:#5B82FF">+22,6%</span>.<br><span style="color:#8C93A6">Primeros en 2028; segundos al cierre, a 44 puntos de Beta.</span></h2>
+  <svg width="1920" height="1080" style="position:absolute;inset:0" font-family="Geist Mono">
+    <!-- scale: x 2025..2030 -> 200..1560 ; y 2900..4000 -> 980..420  (560px / 1100pts) -->
+    <g stroke="#F3F0E8" stroke-opacity=".08">
+      <line x1="200" x2="1560" y1="878" y2="878"/><line x1="200" x2="1560" y1="725" y2="725"/><line x1="200" x2="1560" y1="573" y2="573"/>
+    </g>
+    <g fill="#8C93A6" font-size="16"><text x="180" y="883" text-anchor="end">3.100</text><text x="180" y="730" text-anchor="end">3.400</text><text x="180" y="578" text-anchor="end">3.700</text></g>
+    <!-- y(v)=980-(v-2900)*0.50909 -->
+    <!-- others -->
+    <polyline fill="none" stroke="#CBC6BB" stroke-opacity=".35" stroke-width="2" points="200,858 472,697 744,702 1016,595 1288,931 1560,900"/>
+    <polyline fill="none" stroke="#CBC6BB" stroke-opacity=".35" stroke-width="2" points="200,858 472,729 744,758 1016,644 1288,574 1560,621"/>
+    <polyline fill="none" stroke="#CBC6BB" stroke-opacity=".35" stroke-width="2" points="200,858 472,824 744,826 1016,703 1288,686 1560,746"/>
+    <!-- beta -->
+    <polyline fill="none" stroke="#9C9588" stroke-width="3" stroke-dasharray="2 0" points="200,858 472,668 744,539 1016,556 1288,505 1560,476"/>
+    <!-- omega -->
+    <polyline fill="none" stroke="#5B82FF" stroke-width="5" points="200,858 472,682 744,643 1016,537 1288,506 1560,497"/>
+    <g fill="#5B82FF"><circle cx="200" cy="858" r="8"/><circle cx="472" cy="682" r="8"/><circle cx="744" cy="643" r="8"/><circle cx="1288" cy="506" r="8"/><circle cx="1560" cy="497" r="8"/></g>
+    <circle cx="1016" cy="537" r="12" fill="#FF6B3D"/>
+    <text x="1016" y="505" fill="#FF6B3D" font-size="18" text-anchor="middle">1° · 3.769</text>
+    <text x="1600" y="490" fill="#5B82FF" font-size="20">Omega 3.847</text>
+    <text x="1600" y="465" fill="#9C9588" font-size="20">Beta 3.891</text>
+    <text x="1600" y="628" fill="#CBC6BB" fill-opacity=".6" font-size="18">Delta 3.606</text>
+    <text x="1600" y="752" fill="#CBC6BB" fill-opacity=".6" font-size="18">Gama 3.359</text>
+    <text x="1600" y="906" fill="#CBC6BB" fill-opacity=".6" font-size="18">Alfa 3.055</text>
+    <g fill="#8C93A6" font-size="17" text-anchor="middle"><text x="200" y="1020">2025</text><text x="472" y="1020">P1</text><text x="744" y="1020">P2</text><text x="1016" y="1020">P3</text><text x="1288" y="1020">P4</text><text x="1560" y="1020">P5</text></g>
+    <!-- annotation -->
+    <text x="1016" y="478" fill="#9C9588" font-size="16" text-anchor="middle">Beta penalizada ×0,95</text>
+  </svg>
+</section>
+
+<!-- ============ BOARD: paleta + tipografía ============ -->
+<section class="board">
+  <div class="eyebrow" style="color:var(--mute)">Dirección visual · Paleta y tipografía</div>
+  <div class="sw">
+    <div style="background:#0A0F1E;color:#F3F0E8">Noche<br>#0A0F1E</div>
+    <div style="background:#141B2D;color:#F3F0E8">Grafito<br>#141B2D</div>
+    <div style="background:#F3F0E8;border:1px solid #d8d3c6">Papel<br>#F3F0E8</div>
+    <div style="background:#2F5BFF;color:#fff">Omega · azul eléctrico<br>#2F5BFF</div>
+    <div style="background:#35D0E8">Cian · acento en oscuro<br>#35D0E8</div>
+    <div style="background:#FF6B3D">Decisión · ámbar<br>#FF6B3D</div>
+    <div style="background:#9C9588;color:#fff">Beta · referencia<br>#9C9588</div>
+    <div style="background:#E0484D;color:#fff">Riesgo<br>#E0484D</div>
+  </div>
+  <div style="display:flex;gap:120px;margin-top:90px;align-items:flex-end">
+    <div><div style="font-size:220px;font-weight:600;letter-spacing:-.05em;line-height:.85">+99,5%</div><div class="mono" style="margin-top:20px;color:var(--mute);font-size:20px">Geist 600 · cifras protagonistas · tracking −5%</div></div>
+    <div style="max-width:700px"><div style="font-size:56px;font-weight:500;letter-spacing:-.03em;line-height:1.08">Titulares que afirman una conclusión, no un tema.</div>
+      <div style="font-size:26px;line-height:1.5;color:#4b4a46;margin-top:24px">Texto de apoyo en Geist 400, máximo dos líneas por bloque. La explicación larga vive en las notas de exposición.</div>
+      <div class="mono" style="margin-top:24px;color:var(--mute);font-size:20px">GEIST MONO · etiquetas, ejes, fuentes, períodos</div></div>
+  </div>
+</section>
+</body>
+</html>
